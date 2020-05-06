@@ -1,4 +1,4 @@
-### Containers for fv3gfs
+# Containers for fv3gfs
 
 Included are scripts for generating Docker images for fv3gfs using either the GNU or Intel compiler collection.
 
