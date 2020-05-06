@@ -1,0 +1,5 @@
+FROM dshawul/netcdf-intel:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+COPY tarfiles/esmf-8.0.0_bs40.tar.gz /opt
+COPY scripts/build_esmf.sh /opt

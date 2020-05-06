@@ -1,0 +1,34 @@
+FROM ubuntu:18.04
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ca-certificates \
+        make \
+        cmake \
+        gcc \
+        g++ \
+        gfortran \
+        libgfortran-7-dev \
+        libstdc++-7-dev \
+        m4 \
+        ksh \
+        python \
+        perl \
+        libxml2-dev \
+        openssh-server \
+        rsync \
+        git \
+        wget \
+        vim \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/build_mpi.sh /opt
+COPY scripts/build_netcdf.sh /opt
+
+RUN  cd /opt && ./build_mpi.sh && COMP=gnu ./build_netcdf.sh
+
+COPY setup.linux.gnu /opt
+
+ARG PP=/etc/bashrc
+RUN echo ". /opt/setup.linux.gnu" >> $PP

@@ -1,0 +1,15 @@
+diff --git src/incmake/confopt.mk src/incmake/confopt.mk
+index 31b981f..7bd23d8 100644
+--- src/incmake/confopt.mk
++++ src/incmake/confopt.mk
+@@ -53,6 +53,10 @@ ifneq ($(CONFOPT),)
+     CONFIGURE_NEMS_FILE ?= configure.nems.Linux.gnu conf/configure.nems
+     EXTERNALS_NEMS_FILE ?= externals.nems.Linux.gnu
+ 
++  else ifeq ($(CONFOPT),coupled_linux_intel)
++    CONFIGURE_NEMS_FILE ?= configure.nems.Linux.intel conf/configure.nems
++    EXTERNALS_NEMS_FILE ?= externals.nems.Linux.intel
++
+   else
+     ifneq ($(wildcard $(ROOTDIR)/conf/$(CONFOPT)),)
+       CONFIGURE_NEMS_FILE ?= $(CONFOPT)

@@ -1,0 +1,72 @@
+diff --git gfsphysics/GFS_layer/GFS_driver.F90 gfsphysics/GFS_layer/GFS_driver.F90
+index 3b6a943..fbfb358 100644
+--- gfsphysics/GFS_layer/GFS_driver.F90
++++ gfsphysics/GFS_layer/GFS_driver.F90
+@@ -670,15 +670,15 @@ module GFS_driver
+     type(GFS_radtend_type),         intent(inout) :: Radtend
+     type(GFS_diag_type),            intent(inout) :: Diag
+ #else
+-    type(GFS_control_type),   intent(in   ) :: Model
+-    type(GFS_statein_type),   intent(in   ) :: Statein
+-    type(GFS_stateout_type),  intent(in   ) :: Stateout
+-    type(GFS_sfcprop_type),   intent(in   ) :: Sfcprop
++    type(GFS_control_type),   intent(inout   ) :: Model
++    type(GFS_statein_type),   intent(inout   ) :: Statein
++    type(GFS_stateout_type),  intent(inout   ) :: Stateout
++    type(GFS_sfcprop_type),   intent(inout   ) :: Sfcprop
+     type(GFS_coupling_type),  intent(inout) :: Coupling
+-    type(GFS_grid_type),      intent(in   ) :: Grid
+-    type(GFS_tbd_type),       intent(in   ) :: Tbd
+-    type(GFS_cldprop_type),   intent(in   ) :: Cldprop
+-    type(GFS_radtend_type),   intent(in   ) :: Radtend
++    type(GFS_grid_type),      intent(inout   ) :: Grid
++    type(GFS_tbd_type),       intent(inout   ) :: Tbd
++    type(GFS_cldprop_type),   intent(inout   ) :: Cldprop
++    type(GFS_radtend_type),   intent(inout   ) :: Radtend
+     type(GFS_diag_type),      intent(inout) :: Diag
+ #endif
+     !--- local variables
+diff --git gfsphysics/GFS_layer/GFS_physics_driver.F90 gfsphysics/GFS_layer/GFS_physics_driver.F90
+index a547169..43281f8 100644
+--- gfsphysics/GFS_layer/GFS_physics_driver.F90
++++ gfsphysics/GFS_layer/GFS_physics_driver.F90
+@@ -462,12 +462,12 @@ module module_physics_driver
+       type(GFS_radtend_type),         intent(inout) :: Radtend
+       type(GFS_diag_type),            intent(inout) :: Diag
+ #else
+-      type(GFS_control_type),         intent(in)    :: Model
++      type(GFS_control_type),         intent(inout)    :: Model
+       type(GFS_statein_type),         intent(inout) :: Statein
+       type(GFS_stateout_type),        intent(inout) :: Stateout
+       type(GFS_sfcprop_type),         intent(inout) :: Sfcprop
+       type(GFS_coupling_type),        intent(inout) :: Coupling
+-      type(GFS_grid_type),            intent(in)    :: Grid
++      type(GFS_grid_type),            intent(inout)    :: Grid
+       type(GFS_tbd_type),             intent(inout) :: Tbd
+       type(GFS_cldprop_type),         intent(inout) :: Cldprop
+       type(GFS_radtend_type),         intent(inout) :: Radtend
+diff --git gfsphysics/GFS_layer/GFS_radiation_driver.F90 gfsphysics/GFS_layer/GFS_radiation_driver.F90
+index c7323d6..629e6a1 100644
+--- gfsphysics/GFS_layer/GFS_radiation_driver.F90
++++ gfsphysics/GFS_layer/GFS_radiation_driver.F90
+@@ -1043,14 +1043,14 @@
+       type(GFS_radtend_type),         intent(inout) :: Radtend
+       type(GFS_diag_type),            intent(inout) :: Diag
+ #else
+-      type(GFS_control_type),         intent(in)    :: Model
+-      type(GFS_statein_type),         intent(in)    :: Statein
++      type(GFS_control_type),         intent(inout)    :: Model
++      type(GFS_statein_type),         intent(inout)    :: Statein
+       type(GFS_stateout_type),        intent(inout) :: Stateout
+-      type(GFS_sfcprop_type),         intent(in)    :: Sfcprop
++      type(GFS_sfcprop_type),         intent(inout)    :: Sfcprop
+       type(GFS_coupling_type),        intent(inout) :: Coupling
+-      type(GFS_grid_type),            intent(in)    :: Grid
+-      type(GFS_tbd_type),             intent(in)    :: Tbd
+-      type(GFS_cldprop_type),         intent(in)    :: Cldprop
++      type(GFS_grid_type),            intent(inout)    :: Grid
++      type(GFS_tbd_type),             intent(inout)    :: Tbd
++      type(GFS_cldprop_type),         intent(inout)    :: Cldprop
+       type(GFS_radtend_type),         intent(inout) :: Radtend
+       type(GFS_diag_type),            intent(inout) :: Diag
+ #endif

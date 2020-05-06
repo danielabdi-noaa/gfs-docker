@@ -1,0 +1,32 @@
+FROM centos:8
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN dnf update -y && \
+    dnf install -y \
+        ca-certificates \
+        environment-modules \
+        make \
+        cmake \
+        gcc \
+        gcc-c++ \
+        gcc-gfortran \
+        m4 \
+        ksh \
+        python2 \
+        perl \
+        libxml2-devel \
+        openssh-server \
+        rsync \
+        git \
+        which \
+        wget \
+        vim \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/intel_comp.sh /opt
+COPY scripts/build_netcdf.sh /opt
+
+COPY setup.linux.intel /opt
+
+ARG PP=/etc/bashrc
+RUN echo ". /opt/setup.linux.intel" >> $PP
