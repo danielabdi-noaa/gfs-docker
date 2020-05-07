@@ -4,9 +4,10 @@ Included are scripts for generating Docker images for fv3gfs using either the GN
 
 ## Requirements
 Docker should be already installed on the system to generate images.
-You need to have access to NEMSfv3gfs source code.
+You need to have access to NEMSfv3gfs source code. If you want to compile the whole global-workflow, you will
+need access to that repositiory with its components (including GSI) etc.
 
-## Preparing NEMSfv3gfs
+## Preparing NEMSfv3gfs and/or global-workflow
 
 You would need to clone the NEMSfv3gfs repository from vlab and put it in the main directory.
 If you have already setup gerrit for ssh clone, this is how to do it
@@ -18,9 +19,19 @@ Untile these are merged to the main branch, you will need to patch your freshly 
 
     ./patch_fv3.sh
 
+For global-workflow, you can clone our modified repository
+    
+    git clone --recursive https://github.com/NOAA-GSD/global-workflow.git
+
+and checkout the feature/linux-target branch. You would still need access to private repositories GSI, NEMSfv3gfs etc.
+
+
 ## Compiling
 
-You can compile with GNU or INTEL compiler collection as follows
+You can compile with GNU or INTEL compiler collection as follows.
+To give your images a specific repository name, pass the respository name to the scripts as
+    
+    REPO=noaagsl ./build_gnu_images.sh
 
 ### GNU
 
@@ -28,7 +39,7 @@ Generating the GNU images is straightforward
 
     ./build_gnu_images.sh
 
-This will generate three separate images for mpi+netcdf, ESMF and NEMSfv3gfs libraries.
+This will generate four separate images for mpi+netcdf, ESMF, NEMSfv3gfs and NCEPLIBS needed for global-workflow libraries.
 The OS within the container is ubuntu:18.04
 
 You can install a version of mpi you like by modifying `build_mpi.sh`

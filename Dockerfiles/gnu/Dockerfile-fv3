@@ -1,4 +1,5 @@
-FROM dshawul/esmf-gnu:latest
+ARG REPO
+FROM ${REPO}/esmf-gnu:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 COPY ./NEMSfv3gfs /opt/NEMSfv3gfs

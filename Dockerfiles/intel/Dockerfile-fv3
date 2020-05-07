@@ -1,4 +1,5 @@
-FROM dshawul/esmf-intel:latest
+ARG REPO
+FROM ${REPO}/esmf-intel:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 COPY ./NEMSfv3gfs /opt/NEMSfv3gfs

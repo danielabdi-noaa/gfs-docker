@@ -4,7 +4,7 @@ REPO=${REPO:-dshawul}
 
 #build image
 build_image() {
-    docker build -t ${1} -f ${2} .
+    docker build --build-arg REPO=${REPO} -t ${1} -f ${2} .
 }
 
 #netcdf

@@ -6,7 +6,7 @@ REPO=${REPO:-dshawul}
 
 #loads intel compiler from host and builds image with it
 build_image() {
-    docker build -t ${1} -f ${2} .
+    docker build --build-arg REPO=${REPO} -t ${1} -f ${2} .
     docker run --name temp -v ${INTEL_COMP_DIR}:${INTEL_COMP_DIR} -d -it ${1} bash
     docker exec -it temp /bin/bash -c "${3}"
     docker commit temp ${1}

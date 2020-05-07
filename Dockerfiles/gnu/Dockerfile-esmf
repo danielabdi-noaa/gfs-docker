@@ -1,4 +1,5 @@
-FROM dshawul/netcdf-gnu:latest
+ARG REPO
+FROM ${REPO}/netcdf-gnu:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 COPY scripts/build_esmf.sh /opt
