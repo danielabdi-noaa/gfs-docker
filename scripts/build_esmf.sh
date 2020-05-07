@@ -15,6 +15,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${INSTALL_DIR}/lib
 
 VER=esmf-8.0.0_bs40
 
+#clone the specific snapshot of the repo
+git clone -b ESMF_8_0_0_beta_snapshot_40 --depth 1 https://git.code.sf.net/p/esmf/esmf esmf
+
+#set compiler
 if [ "$COMP" = "intel" ]; then
     export ESMF_COMPILER=intel
     export ESMF_CXXCOMPILER=mpiicpc
@@ -40,14 +44,13 @@ export ESMF_INSTALL_LIBDIR=lib
 export ESMF_INSTALL_MODDIR=mod
 export ESMF_INSTALL_PREFIX=${INSTALL_DIR}/${VER}
 
-cd $SRC_DIR && mkdir -p esmf && \
-    tar -xvf ${VER}.tar.gz -C esmf && \
-    cd esmf/${VER} && \
+cd $SRC_DIR && \
+    cd esmf && \
     export ESMF_DIR=`pwd` && \
     make info 2>&1 | tee log.info && \
     make 2>&1 | tee log.make && \
     make install 2>&1 | tee log.install && \
     make installcheck 2>&1 | tee log.installcheck && \
-    cd ../.. && \
-    rm -fr esmf ${VER}.tar.gz
+    cd .. && \
+    rm -fr esmf
 

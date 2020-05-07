@@ -44,4 +44,5 @@ cd $SRC_DIR && wget ${DLINK} && \
     ./configure $IFLAGS --prefix=$INSTALL_DIR && \
     make && \
     make install && \
+    cd .. && \
     rm -rf ${PP} ${PP}.tar.gz
