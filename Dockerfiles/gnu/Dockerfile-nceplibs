@@ -1,0 +1,33 @@
+FROM dshawul/esmf-gnu:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+	lsb-release \
+        libcurl4-gnutls-dev \
+        libblas-dev \
+        liblapack-dev \
+        libpng-dev \
+        libbz2-dev \
+        libmotif-dev \
+        libx11-dev  \
+        libxt-dev  \
+        libxext-dev  \
+        libxpa-dev  \
+        libxft-dev  \
+        libxtst-dev  \
+        libcairo2-dev \
+        libpixman-1-dev \
+        xbitmaps  \
+        file \
+        flex  \
+        byacc  \
+        python-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/checkout_nceplibs.sh /opt
+COPY scripts/build_nceplibs.sh /opt
+COPY patches /opt/patches
+
+RUN cd /opt && ./checkout_nceplibs.sh
+RUN cd /opt && ./build_nceplibs.sh

@@ -1,0 +1,19 @@
+diff --git src/makebufrlib.sh src/makebufrlib.sh
+index 0512cdc..0c618b3 100755
+--- src/makebufrlib.sh
++++ src/makebufrlib.sh
+@@ -51,6 +51,14 @@ then
+             export CC=icc
+         fi
+         ;;
++    gnu)
++        export FC=gfortran
++        export CC=gcc
++        flag64int="-fdefault-integer-8"
++        flag64flt="-fdefault-real-8"
++        fflags_base="-g -O2"
++        cflags_base="-g -O2 -DUNDERSCORE"
++        ;;
+     *)
+         fflags_base=""
+         cflags_base="-DUNDERSCORE"

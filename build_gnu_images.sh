@@ -21,3 +21,8 @@ build_image ${IMAGE_NAME} ${DOCKER_FILE}
 IMAGE_NAME=${REPO}/fv3-gnu
 DOCKER_FILE=Dockerfiles/gnu/Dockerfile-fv3
 build_image ${IMAGE_NAME} ${DOCKER_FILE}
+
+#nceplibs
+IMAGE_NAME=${REPO}/nceplibs-gnu
+DOCKER_FILE=Dockerfiles/gnu/Dockerfile-nceplibs
+build_image ${IMAGE_NAME} ${DOCKER_FILE}

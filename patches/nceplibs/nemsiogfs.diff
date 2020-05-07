@@ -1,0 +1,17 @@
+diff --git src/nemsio_gfs.f90 src/nemsio_gfs.f90
+index 1e31b57..c1dd79e 100755
+--- src/nemsio_gfs.f90
++++ src/nemsio_gfs.f90
+@@ -161,9 +161,9 @@ module nemsio_gfs
+   end type nemsio_headv
+ 
+   character(charkind),dimension(18) :: aero_tracername=(/      &
+-      "du001","du002","du003","du004","du005",                 &
+-      "ss001","ss002","ss003","ss004","ss005",                 &
+-      "dms",  "so2",  "so4",  "msa",  "bcphobic",              &
++      "du001   ","du002   ","du003   ","du004   ","du005   ",                 &
++      "ss001   ","ss002   ","ss003   ","ss004   ","ss005   ",                 &
++      "dms     ","so2     ","so4     ","msa     ","bcphobic",              &
+       "bcphilic","ocphobic","ocphilic"/)
+ 
+ 

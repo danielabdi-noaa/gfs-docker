@@ -1,0 +1,159 @@
+diff --git v2.0.0/src/compile_all_graphics_lib_wcoss.sh v2.0.0/src/compile_all_graphics_lib_wcoss.sh
+index f50e853..89ff93c 100755
+--- v2.0.0/src/compile_all_graphics_lib_wcoss.sh
++++ v2.0.0/src/compile_all_graphics_lib_wcoss.sh
+@@ -30,6 +30,10 @@ if [ $# -ne 1 ]; then
+   echo "  #                                                           #"
+   echo "  #         $0   dell        #"
+   echo "  #                                                           #"
++  echo "  #      or                                                   #"
++  echo "  #                                                           #"
++  echo "  #         $0   linux       #"
++  echo "  #                                                           #"
+   echo "  #############################################################"
+   echo " "
+   echo " "
+@@ -59,6 +63,9 @@ elif [ $target = dell ]; then
+     module load bufr/11.2.0
+     module use -a /gpfs/dell1/nco/ops/nwpara/modulefiles/
+     module load gempak/7.3.1
++elif [ $target = linux ]; then
++   export GEMINC=${GFS_LIBS_DIR}/GEMPAK7/gempak/include
++   export OS_INC=${GFS_LIBS_DIR}/GEMPAK7/os/linux64_gfortran/include
+ else
+    echo "  "
+    echo "  "
+@@ -74,6 +81,11 @@ else
+    echo "  "
+    echo "           $0   dell       "
+    echo "  "
++   echo "        or                 "
++   echo "  "
++   echo "           $0   linux      "
++   echo "  "
++   echo "  "
+    echo "  "
+    exit
+ fi
+diff --git v2.0.0/src/decod_ut/makedecod_ut.sh v2.0.0/src/decod_ut/makedecod_ut.sh
+index 1b4637b..5bcac6b 100755
+--- v2.0.0/src/decod_ut/makedecod_ut.sh
++++ v2.0.0/src/decod_ut/makedecod_ut.sh
+@@ -60,12 +60,12 @@ SHELL=/bin/sh
+ \$(LIB):	\$(LIB)( ${OBJS} )
+ 
+ .f.a:
+-	ifort -c \$(FFLAGS) \$<
++	$(FC) -c \$(FFLAGS) \$<
+ 	ar -ruv \$(AFLAGS) \$@ \$*.o
+ 	rm -f \$*.o
+ 
+ .c.a:
+-	icc -c \$(CFLAGS) \$<
++	$(CC) -c \$(CFLAGS) \$<
+ 	ar -ruv  \$(AFLAGS) \$@ \$*.o
+ 	rm -f \$*.o
+ EOF
+@@ -78,7 +78,12 @@ export LIB="./libdecod_ut_${version}.a"
+ export FFLAGS=" -O3 -I${decod_include} -I${GEMINC} -I${OS_INC} "
+ export CFLAGS=" -O3 -DUNDERSCORE"
+ export AFLAGS=" "
+-make -f make.libdecod_ut
++
++if [ "$COMP" = "gnu" ]
++  CC=gcc FC=gfortran make -f make.libdecod_ut
++else
++  CC=icc FC=ifort make -f make.libdecod_ut
++fi
+ 
+ #--------------------------------------------------------------
+ #     Clean up.
+diff --git v2.0.0/src/gph/makefile v2.0.0/src/gph/makefile
+index 565a3b0..6c98dbc 100755
+--- v2.0.0/src/gph/makefile
++++ v2.0.0/src/gph/makefile
+@@ -1,7 +1,14 @@
++ifeq ($(COMP),gnu)
++CC = gcc
++CFLAGS = -O -g
++FC = gfortran
++FFLAGS = -D_LITTLE_ENDIAN -O -g -fdefault-integer-8 -fdefault-real-8 -fconvert=big-endian -fno-range-check
++else
+ CC = icc
+ CFLAGS = -O -g -traceback
+ FC = ifort
+ FFLAGS = -D_LITTLE_ENDIAN -O -g -traceback -integer-size 64 -real-size 64 -convert big_endian -assume byterecl -assume nobscc -assume noold_ldout_format
++endif
+ 
+ OBJ = afnaij.o \
+       afostx.o \
+diff --git v2.0.0/src/gphcntr/makefile v2.0.0/src/gphcntr/makefile
+index ab02e4d..d6ef673 100755
+--- v2.0.0/src/gphcntr/makefile
++++ v2.0.0/src/gphcntr/makefile
+@@ -1,5 +1,10 @@
++ifeq ($(COMP),gnu)
++FC = gfortran
++FFLAGS = -D_LITTLE_ENDIAN -O -g -C -fdefault-integer-8 -fdefault-real-8 -fconvert=big-endian -fno-range-check -fcray-pointer
++else
+ FC = ifort
+ FFLAGS = -D_LITTLE_ENDIAN -O -g -traceback -C -integer-size 64 -real-size 64 -assume byterecl -convert big_endian -assume nobscc -assume noold_ldout_format
++endif
+ 
+ OBJ = atoi.o \
+       barb2ras.o \
+diff --git v2.0.0/src/gphfont/makefile v2.0.0/src/gphfont/makefile
+index 93a5ac0..507afa6 100755
+--- v2.0.0/src/gphfont/makefile
++++ v2.0.0/src/gphfont/makefile
+@@ -1,5 +1,10 @@
++ifeq ($(COMP),gnu)
++FC = gfortran
++FFLAGS = -O -g -D_LITTLE_ENDIAN -C -fdefault-integer-8 -fdefault-real-8 -fconvert=big-endian -fno-range-check
++else
+ FC = ifort
+ FFLAGS = -O -g -D_LITTLE_ENDIAN -C -i8 -r8 -assume byterecl -convert big_endian -assume nobscc -assume noold_ldout_format
++endif
+ 
+ OBJ = chindx.o \
+       chindxe.o \
+diff --git v2.0.0/src/util/makefile v2.0.0/src/util/makefile
+index d812963..6010420 100755
+--- v2.0.0/src/util/makefile
++++ v2.0.0/src/util/makefile
+@@ -1,8 +1,16 @@
++ifeq ($(COMP),gnu)
++CC = gcc
++CFLAGS = -std=c99 -O -g -C 
++FC = gfortran
++#FFLAGS = -O -g -traceback -C
++FFLAGS =  -D_LITTLE_ENDIAN -O -g -C -fdefault-integer-8 -fdefault-real-8 -fconvert=big-endian
++else
+ CC = icc
+ CFLAGS = -std=c99 -O -g -traceback -C 
+ FC = ifort
+ #FFLAGS = -O -g -traceback -C
+ FFLAGS =  -D_LITTLE_ENDIAN -O -g -traceback -C -integer-size 64 -real-size 64 -assume byterecl -convert big_endian -assume nobscc -assume noold_ldout_format
++endif
+ 
+ OBJ = dbgprtz.o \
+       movbitz.o \
+diff --git v2.0.0/src/w3g/makefile v2.0.0/src/w3g/makefile
+index 6fba750..22c1a77 100755
+--- v2.0.0/src/w3g/makefile
++++ v2.0.0/src/w3g/makefile
+@@ -1,7 +1,14 @@
++ifeq ($(COMP),gnu)
++CC = gcc
++CFLAGS = -D_LITTLE_ENDIAN -O -g -C
++FC = gfortran
++FFLAGS = -D_LITTLE_ENDIAN -O -g -C -fdefault-integer-8 -fdefault-real-8
++else
+ CC = icc
+ CFLAGS = -D_LITTLE_ENDIAN -O -g -traceback -C
+ FC = ifort
+ FFLAGS = -D_LITTLE_ENDIAN -O -g -traceback -C -integer-size 64 -real-size 64 -assume byterecl -assume nobscc -assume noold_ldout_format
++endif
+ 
+ OBJ = \
+       getgb1.o \

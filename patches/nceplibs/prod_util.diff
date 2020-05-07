@@ -1,0 +1,38 @@
+diff --git sorc/fsync_file.cd/makefile sorc/fsync_file.cd/makefile
+index fd0fb58..32cb54e 100755
+--- sorc/fsync_file.cd/makefile
++++ sorc/fsync_file.cd/makefile
+@@ -1,3 +1,2 @@
+ fsync_file:  fsync_file.c
+-	cc -o fsync_file fsync_file.c
+-#	ncepcc -o fsync_file fsync_file.c
++	$(CC) -o fsync_file fsync_file.c
+diff --git sorc/mdate.fd/makefile sorc/mdate.fd/makefile
+index 5b1ca55..992d10f 100755
+--- sorc/mdate.fd/makefile
++++ sorc/mdate.fd/makefile
+@@ -2,4 +2,4 @@
+ #LIBS =    /nwprod/lib/libw3nco_4.a
+ 
+ mdate:	mdate.f
+-	ftn -o mdate mdate.f $(W3NCO_LIB4)
++	$(FC) -o mdate mdate.f $(W3NCO_LIB4)
+diff --git sorc/ndate.fd/makefile sorc/ndate.fd/makefile
+index ae52bca..a2c7439 100755
+--- sorc/ndate.fd/makefile
++++ sorc/ndate.fd/makefile
+@@ -1,4 +1,4 @@
+ #LIBS =    /nwprod/lib/libw3nco_4.a
+ 
+ ndate:	ndate.f
+-	ftn -o ndate ndate.f $(W3NCO_LIB4)
++	$(FC) -o ndate ndate.f $(W3NCO_LIB4)
+diff --git sorc/nhour.fd/makefile sorc/nhour.fd/makefile
+index 87374e4..b2b75e3 100755
+--- sorc/nhour.fd/makefile
++++ sorc/nhour.fd/makefile
+@@ -1,3 +1,3 @@
+ #LIBS =    /nwprod/lib/libw3nco_4.a
+ nhour:	nhour.f
+-	ftn -o nhour nhour.f $(W3NCO_LIB4)
++	$(FC) -o nhour nhour.f $(W3NCO_LIB4)

@@ -1,0 +1,377 @@
+diff --git modulefiles/g2.linux modulefiles/g2.linux
+index e69de29..5f88fad 100644
+--- modulefiles/g2.linux
++++ modulefiles/g2.linux
+@@ -0,0 +1,16 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for G2 on Linux with gcc/gfortran"
++
++export COMP=${COMP}
++export LNAME=${COMP}
++export G2_DIR=${G2_DIR:-/opt/NCEPLIBS-g2}
++export G2_SRC=${G2_DIR}/src
++export G2_INC4=${G2_DIR}/${LNAME}/include/g2_v3.1.0_4
++export G2_INCd=${G2_DIR}/${LNAME}/include/g2_v3.1.0_d
++export G2_LIB4=${G2_DIR}/${LNAME}/libg2_v3.1.0_4.a
++export G2_LIBd=${G2_DIR}/${LNAME}/libg2_v3.1.0_d.a
++export G2_VER=3.1.0
+diff --git src/enc_jpeg2000.c src/enc_jpeg2000.c
+index cd4d9f6..fa202c0 100644
+--- src/enc_jpeg2000.c
++++ src/enc_jpeg2000.c
+@@ -139,7 +139,6 @@ int SUB_NAME(unsigned char *cin,g2int *pwidth,g2int *pheight,g2int *pnbits,
+     image.clrspc_=JAS_CLRSPC_SGRAY;         /* grayscale Image */
+     image.cmprof_=0; 
+ #endif
+-    image.inmem_=1;
+ 
+     cmpt.tlx_=0;
+     cmpt.tly_=0;
+diff --git src/makefile_4_linux src/makefile_4_linux
+index e69de29..d9966f9 100644
+--- src/makefile_4_linux
++++ src/makefile_4_linux
+@@ -0,0 +1,123 @@
++SHELL=/bin/sh
++
++#  Make sure one of the following options appears in your CFLAGS
++#  variable to indicate which system you are on.  Used to call
++#  "C" routines from Fortran.
++#  -DLINUX, -DLINUXG95, -DSGI, -DHP, -DCRAY90, -DAIX, -DLINUXF90, -DVPP5000
++
++#  If you want to enable support for PNG or JPEG2000 encoding/decoding,
++#  you must specify -DUSE_PNG and/or -DUSE_JPEG2000 in the FDEFS variable
++#  for the Fortran pre-processor
++#  -DUSE_PNG requires libpng.a and libz.a
++#                     ( and png.h pngconf.h zconf.h zlib.h include files).
++#  -DUSE_JPEG2000 requires libjasper.a
++#                     ( and all the jasper/*.h include files).
++#
++#  In addition, INCDIR must include all directories where the above
++#  mentioned include files can be found.
++FDEFS=-DUSE_PNG -DUSE_JPEG2000
++
++LIB=../${COMP}/libg2_${version}_4.a
++
++#-------------------------------------------
++# The following was used for Intel on WCOSS
++DEFS=-DLINUX
++MODDIR=../${COMP}/include/g2_${version}_4
++
++ifeq ($(COMP),gnu)
++FC=gfortran
++CC=gcc
++FFLAGS=-O3 -g -fno-range-check -J$(MODDIR) -I$(MODDIR)
++else
++FC=ifort
++CC=icc
++FFLAGS=-O3 -g -assume noold_ldout_format -module $(MODDIR)
++endif
++CPP=cpp -P
++CFLAGS=-O3 -g $(DEFS) -I${JASPER_INC} -I${PNG_INC} -I${Z_INC} -D__64BIT__
++ARFLAGS=
++
++.SUFFIXES: .a .f .c
++
++$(LIB):	$(LIB)(gridtemplates.o) \
++	$(LIB)(pdstemplates.o) \
++	$(LIB)(drstemplates.o) \
++	$(LIB)(gribmod.o) \
++	$(LIB)(realloc.o) \
++	$(LIB)(addfield.o) \
++	$(LIB)(addgrid.o) \
++	$(LIB)(addlocal.o) \
++	$(LIB)(getfield.o) \
++	$(LIB)(gb_info.o) \
++	$(LIB)(gf_getfld.o) \
++	$(LIB)(gf_free.o) \
++	$(LIB)(gf_unpack1.o) \
++	$(LIB)(gf_unpack2.o) \
++	$(LIB)(gf_unpack3.o) \
++	$(LIB)(gf_unpack4.o) \
++	$(LIB)(gf_unpack5.o) \
++	$(LIB)(gf_unpack6.o) \
++	$(LIB)(gf_unpack7.o) \
++	$(LIB)(gettemplates.o) \
++	$(LIB)(getlocal.o) \
++	$(LIB)(getdim.o) \
++	$(LIB)(getpoly.o) \
++	$(LIB)(gribcreate.o) \
++	$(LIB)(gribend.o) \
++	$(LIB)(gribinfo.o) \
++	$(LIB)(mkieee.o) \
++	$(LIB)(rdieee.o) \
++	$(LIB)(simpack.o) \
++	$(LIB)(simunpack.o) \
++	$(LIB)(cmplxpack.o) \
++	$(LIB)(compack.o) \
++	$(LIB)(misspack.o) \
++	$(LIB)(pack_gp.o) \
++	$(LIB)(reduce.o) \
++	$(LIB)(comunpack.o) \
++	$(LIB)(specpack.o) \
++	$(LIB)(specunpack.o) \
++	$(LIB)(jpcpack.o) \
++	$(LIB)(jpcunpack.o) \
++	$(LIB)(enc_jpeg2000.o) \
++	$(LIB)(dec_jpeg2000.o) \
++	$(LIB)(pngpack.o) \
++	$(LIB)(pngunpack.o) \
++	$(LIB)(enc_png.o) \
++	$(LIB)(dec_png.o) \
++	$(LIB)(gbytesc.o) \
++	$(LIB)(skgb.o) \
++	$(LIB)(ixgb2.o) \
++	$(LIB)(getidx.o) \
++	$(LIB)(getidxes.o) \
++	$(LIB)(getg2i.o) \
++	$(LIB)(getg2ir.o) \
++	$(LIB)(getgb2s.o) \
++	$(LIB)(getgb2r.o) \
++	$(LIB)(getgb2l.o) \
++	$(LIB)(getgb2.o) \
++	$(LIB)(getgb2p.o) \
++	$(LIB)(getgb2rp.o) \
++	$(LIB)(putgb2.o) \
++	$(LIB)(g2grids.o) \
++	$(LIB)(gdt2gds.o) \
++	$(LIB)(params.o) \
++	$(LIB)(intmath.o) \
++	$(LIB)(params_ecmwf.o)
++
++$(LIB)(compack.o): $(LIB)(intmath.o)
++$(LIB)(simpack.o): $(LIB)(intmath.o)
++$(LIB)(misspack.o): $(LIB)(intmath.o)
++
++.f:
++	$(CPP) $(FDEFS) $*.f
++
++.f.a:
++	$(FC) -c $(FFLAGS) $<
++	ar $(ARFLAGS) -ruv $@ $*.o
++	rm -f $*.o
++
++.c.a:
++	$(CC) -c $(CFLAGS) $<
++	ar $(ARFLAGS) -ruv $@ $*.o
++	rm -f $*.o
+diff --git src/makefile_d_linux src/makefile_d_linux
+index e69de29..0c818ac 100644
+--- src/makefile_d_linux
++++ src/makefile_d_linux
+@@ -0,0 +1,123 @@
++SHELL=/bin/sh
++
++#  Make sure one of the following options appears in your CFLAGS
++#  variable to indicate which system you are on.  Used to call
++#  "C" routines from Fortran.
++#  -DLINUX, -DLINUXG95, -DSGI, -DHP, -DCRAY90, -DAIX, -DLINUXF90, -DVPP5000
++
++#  If you want to enable support for PNG or JPEG2000 encoding/decoding,
++#  you must specify -DUSE_PNG and/or -DUSE_JPEG2000 in the FDEFS variable
++#  for the Fortran pre-processor
++#  -DUSE_PNG requires libpng.a and libz.a
++#                     ( and png.h pngconf.h zconf.h zlib.h include files).
++#  -DUSE_JPEG2000 requires libjasper.a
++#                     ( and all the jasper/*.h include files).
++#
++#  In addition, INCDIR must include all directories where the above
++#  mentioned include files can be found.
++FDEFS=-DUSE_PNG -DUSE_JPEG2000
++
++LIB=../${COMP}/libg2_${version}_d.a
++
++#-------------------------------------------
++# The following was used for Intel on WCOSS
++DEFS=-DLINUX
++MODDIR=../${COMP}/include/g2_${version}_d
++
++ifeq ($(COMP),gnu)
++FC=gfortran
++CC=gcc
++FFLAGS=-O3 -g -fdefault-real-8 -fno-range-check -J$(MODDIR) -I$(MODDIR)
++else
++FC=ifort
++CC=icc
++FFLAGS=-O3 -g -r8 -assume noold_ldout_format -module $(MODDIR)
++endif
++CPP=cpp -P
++CFLAGS=-O3 -g $(DEFS) -I${JASPER_INC} -I${PNG_INC} -I${Z_INC} -D__64BIT__
++ARFLAGS=
++
++.SUFFIXES: .a .f .c
++
++$(LIB):	$(LIB)(gridtemplates.o) \
++	$(LIB)(pdstemplates.o) \
++	$(LIB)(drstemplates.o) \
++	$(LIB)(gribmod.o) \
++	$(LIB)(realloc.o) \
++	$(LIB)(addfield.o) \
++	$(LIB)(addgrid.o) \
++	$(LIB)(addlocal.o) \
++	$(LIB)(getfield.o) \
++	$(LIB)(gb_info.o) \
++	$(LIB)(gf_getfld.o) \
++	$(LIB)(gf_free.o) \
++	$(LIB)(gf_unpack1.o) \
++	$(LIB)(gf_unpack2.o) \
++	$(LIB)(gf_unpack3.o) \
++	$(LIB)(gf_unpack4.o) \
++	$(LIB)(gf_unpack5.o) \
++	$(LIB)(gf_unpack6.o) \
++	$(LIB)(gf_unpack7.o) \
++	$(LIB)(gettemplates.o) \
++	$(LIB)(getlocal.o) \
++	$(LIB)(getdim.o) \
++	$(LIB)(getpoly.o) \
++	$(LIB)(gribcreate.o) \
++	$(LIB)(gribend.o) \
++	$(LIB)(gribinfo.o) \
++	$(LIB)(mkieee.o) \
++	$(LIB)(rdieee.o) \
++	$(LIB)(simpack.o) \
++	$(LIB)(simunpack.o) \
++	$(LIB)(cmplxpack.o) \
++	$(LIB)(compack.o) \
++	$(LIB)(misspack.o) \
++	$(LIB)(pack_gp.o) \
++	$(LIB)(reduce.o) \
++	$(LIB)(comunpack.o) \
++	$(LIB)(specpack.o) \
++	$(LIB)(specunpack.o) \
++	$(LIB)(jpcpack.o) \
++	$(LIB)(jpcunpack.o) \
++	$(LIB)(enc_jpeg2000.o) \
++	$(LIB)(dec_jpeg2000.o) \
++	$(LIB)(pngpack.o) \
++	$(LIB)(pngunpack.o) \
++	$(LIB)(enc_png.o) \
++	$(LIB)(dec_png.o) \
++	$(LIB)(gbytesc.o) \
++	$(LIB)(skgb.o) \
++	$(LIB)(ixgb2.o) \
++	$(LIB)(getidx.o) \
++	$(LIB)(getidxes.o) \
++	$(LIB)(getg2i.o) \
++	$(LIB)(getg2ir.o) \
++	$(LIB)(getgb2s.o) \
++	$(LIB)(getgb2r.o) \
++	$(LIB)(getgb2l.o) \
++	$(LIB)(getgb2.o) \
++	$(LIB)(getgb2p.o) \
++	$(LIB)(getgb2rp.o) \
++	$(LIB)(putgb2.o) \
++	$(LIB)(g2grids.o) \
++	$(LIB)(gdt2gds.o) \
++	$(LIB)(params.o) \
++	$(LIB)(intmath.o) \
++	$(LIB)(params_ecmwf.o)
++
++$(LIB)(compack.o): $(LIB)(intmath.o)
++$(LIB)(simpack.o): $(LIB)(intmath.o)
++$(LIB)(misspack.o): $(LIB)(intmath.o)
++
++.f:
++	$(CPP) $(FDEFS) $*.f
++
++.f.a:
++	$(FC) -c $(FFLAGS) $<
++	ar $(ARFLAGS) -ruv $@ $*.o
++	rm -f $*.o
++
++.c.a:
++	$(CC) -c $(CFLAGS) $<
++	ar $(ARFLAGS) -ruv $@ $*.o
++	rm -f $*.o
+diff --git src/makeg2lib_linux.sh src/makeg2lib_linux.sh
+index e69de29..2af5512 100755
+--- src/makeg2lib_linux.sh
++++ src/makeg2lib_linux.sh
+@@ -0,0 +1,46 @@
++#!/bin/sh
++
++export version=v3.1.0
++
++case ${COMP:?} in
++  intel)
++    export FC=${1:-ifort}
++    export CC=${2:-icc}
++    export CPP=${3:-cpp -P} 
++    export flagOpt="-O3 -axCore-AVX2 -g"
++    export flag64flt="-r8"
++    export flagFort="-assume noold_ldout_format -module"
++  ;;
++  gnu)
++    export FC=${1:-gfortran}
++    export CC=${2:-gcc}
++    export CPP=${3:-cpp -P}
++    export flagOpt="-O3 -g"
++    export flag64flt="-fdefault-real-8"
++    export flagFort=""
++  ;;
++  *)
++    >&2 echo "Don't know how to build lib under $COMP compiler"
++    exit 1
++  ;;
++esac
++
++export LIB=../${COMP}/libg2_${version}_4.a
++export MODDIR=../${COMP}/include/g2_${version}_4
++mkdir -p $(dirname $LIB) $MODDIR
++COMP=${COMP} make -f makefile_4_linux
++
++export LIB=../${COMP}/libg2_${version}_d.a
++export MODDIR=../${COMP}/include/g2_${version}_d
++mkdir -p $(dirname $LIB) $MODDIR
++COMP=${COMP} make -f makefile_d_linux
++
++#
++#  Build unit_test
++#
++#echo " "
++#echo " "
++#
++#cd ../unit_test
++#mkdir -p ../exec
++#make -f Makefile_gnu
+diff --git unit_test/Makefile_linux unit_test/Makefile_linux
+index e69de29..51b0dee 100644
+--- unit_test/Makefile_linux
++++ unit_test/Makefile_linux
+@@ -0,0 +1,32 @@
++F90=gfortran
++FFLAGS_4=-O0 -g
++FFLAGS_d=-O0 -g -fdefault-real-8
++
++LDFLAGS_4= -L ../${COMP}/ -lg2_$(version)_4 $(PNG_LIB) $(JASPER_LIB) $(W3NCO_LIB4) $(Z_LIB)
++LDFLAGS_d= -L ../${COMP}/ -lg2_$(version)_d $(PNG_LIB) $(JASPER_LIB) $(W3NCO_LIBd) $(Z_LIB)
++
++TEST_4=../exec/g2_unit_test_4
++TEST_d=../exec/g2_unit_test_d
++
++DVAL_4=../exec/g2_dump_values_4
++DVAL_d=../exec/g2_dump_values_d
++
++all: $(TEST_4) $(TEST_d) $(DVAL_4) $(DVAL_d)
++
++clean: 
++	rm -f *.o *.a *~ a.out
++
++bare: clean
++	rm -f test_g2_4 test_g2_d
++
++$(TEST_4): test_g2.f90 ../${COMP}/libg2_$(version)_4.a
++	$(F90) -o $(TEST_4) $(FFLAGS_4) test_g2.f90 $(LDFLAGS_4)
++
++$(TEST_d): test_g2.f90 ../${COMP}/libg2_$(version)_d.a
++	$(F90) -o $(TEST_d) $(FFLAGS_d) test_g2.f90 $(LDFLAGS_d)
++
++$(DVAL_4): dump_values.f90 ../${COMP}/libg2_$(version)_4.a
++	$(F90) -o $(DVAL_4) $(FFLAGS_4) dump_values.f90 $(LDFLAGS_4)
++
++$(DVAL_d): dump_values.f90 ../${COMP}/libg2_$(version)_d.a
++	$(F90) -o $(DVAL_d) $(FFLAGS_d) dump_values.f90 $(LDFLAGS_d)

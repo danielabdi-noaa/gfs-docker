@@ -30,3 +30,9 @@ IMAGE_NAME=${REPO}/fv3-intel
 DOCKER_FILE=Dockerfiles/intel/Dockerfile-fv3
 COMMAND="cd /opt; source intel_comp.sh; COMP=${COMP} ./build_fv3.sh; ./copy_deps.sh"
 build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"
+
+#nceplibs
+IMAGE_NAME=${REPO}/nceplibs-intel
+DOCKER_FILE=Dockerfiles/intel/Dockerfile-nceplibs
+COMMAND="cd /opt; ./checkout_nceplibs.sh; source intel_comp.sh; COMP=${COMP} ./build_nceplibs.sh"
+build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"

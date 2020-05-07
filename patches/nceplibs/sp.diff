@@ -1,0 +1,68 @@
+diff --git makelibsp.sh_Linux makelibsp.sh_Linux
+index f8a5f73..56a7643 100755
+--- makelibsp.sh_Linux
++++ makelibsp.sh_Linux
+@@ -60,37 +60,52 @@ SHELL=/bin/sh
+ \$(LIB):	\$(LIB)( ${OBJS} )
+ 
+ .f.a:
+-	ifort -c \$(FFLAGS) \$<
++	\$(FC) -c \$(FFLAGS) \$<
+ 	ar -ruv \$(AFLAGS)  \$@ \$*.o
+ 	rm -f \$*.o
+ 
+ .F.a:
+-	ifort -c \$(FFLAGS) \$<
++	\$(FC) -c \$(FFLAGS) \$<
+ 	ar -ruv \$(AFLAGS)  \$@ \$*.o
+ 	rm -f \$*.o
+ EOF
+ #
+ #     Update 4-byte version of libsp_4.a 
+ #
+-export LIB="../../libsp_v2.0.2_4.a"
+-export FFLAGS="-O3 -auto -openmp -i4 -convert big_endian -assume byterecl -fp-model strict -real-size 32 -fpp -DLINUX"
++export LIB="libsp_v2.0.2_4.a"
+ export AFLAGS=" "
+-make -f make.libsp
++if [ $COMP = "gnu" ]; then
++export FFLAGS="-O3 -fopenmp -fconvert=big-endian -cpp -DLINUX"
++FC=gfortran make -f make.libsp
++else
++export FFLAGS="-O3 -auto -qopenmp -i4 -convert big_endian -assume byterecl -fp-model strict -real-size 32 -fpp -DLINUX"
++FC=ifort make -f make.libsp
++fi
+ #
+ #     Update 8-byte version of libsp_8.a
+ #
+-export LIB="../../libsp_v2.0.2_8.a"
+-export FFLAGS=" -O3 -auto -openmp -i8 -r8 -convert big_endian -assume byterecl -fp-model strict -fpp -DLINUX"
++export LIB="libsp_v2.0.2_8.a"
+ export AFLAGS=" "
+-make -f make.libsp
++if [ $COMP = "gnu" ]; then
++export FFLAGS=" -O3 -fopenmp -fdefault-integer-8 -fdefault-real-8 -fconvert=big-endian -cpp -DLINUX"
++FC=gfortran make -f make.libsp
++else
++export FFLAGS=" -O3 -auto -qopenmp -i8 -r8 -convert big_endian -assume byterecl -fp-model strict -fpp -DLINUX"
++FC=ifort make -f make.libsp
++fi
+ #
+ #     Update Double Precision (Size of Real 8-byte and default Integer) version
+ #     of libsp_d.a
+ #
+-export LIB="../../libsp_v2.0.2_d.a"
+-export FFLAGS=" -O3 -auto -openmp -i4 -r8 -convert big_endian -assume byterecl -fp-model strict -fpp -DLINUX"
++export LIB="libsp_v2.0.2_d.a"
+ export AFLAGS=" "
+-make -f make.libsp
++if [ $COMP = "gnu" ]; then
++export FFLAGS=" -O3 -fopenmp -fdefault-real-8 -fconvert=big-endian -cpp -DLINUX"
++FC=gfortran make -f make.libsp
++else
++export FFLAGS=" -O3 -auto -qopenmp -i4 -r8 -convert big_endian -assume byterecl -fp-model strict -fpp -DLINUX"
++FC=ifort make -f make.libsp
++fi
+ 
+ 
+ 

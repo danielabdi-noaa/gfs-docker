@@ -1,0 +1,33 @@
+FROM dshawul/esmf-intel:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN dfn update -y && \
+    dfn install -y \
+        redhat-lsb-core \
+        curl-devel \
+        blas-devel \
+        lapack-devel \
+        libpng-devel \
+        bzip2-devel \
+        openmotif \
+        openmotif-devel \
+        libX11-devel  \
+        libXt-devel  \
+        libXext-devel  \
+        libXp  \
+        libXp-devel \
+        libXft  \
+        libXtst  \
+        cairo \
+        cairo-devel \
+        libpixman \
+        xorg-x11-xbitmaps  \
+        file \
+        flex  \
+        byacc  \
+        python-devel \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/checkout_nceplibs.sh /opt
+COPY scripts/build_nceplibs.sh /opt
+COPY patches /opt/patches
