@@ -1,5 +1,5 @@
 diff --git v2.0.0/src/compile_all_graphics_lib_wcoss.sh v2.0.0/src/compile_all_graphics_lib_wcoss.sh
-index f50e853..89ff93c 100755
+index f50e853..f3563c4 100755
 --- v2.0.0/src/compile_all_graphics_lib_wcoss.sh
 +++ v2.0.0/src/compile_all_graphics_lib_wcoss.sh
 @@ -30,6 +30,10 @@ if [ $# -ne 1 ]; then
@@ -35,8 +35,17 @@ index f50e853..89ff93c 100755
     echo "  "
     exit
  fi
+@@ -138,7 +150,7 @@ for dir in $dlist; do
+           if [ -f ./libdecod_ut_${version}.a ] ; then
+               rm -f ./libdecod_ut_${version}.a
+           fi
+-          makedecod_ut.sh
++          ./makedecod_ut.sh
+           cp ./libdecod_ut_${version}.a  ../../$1
+           ;;
+        *)
 diff --git v2.0.0/src/decod_ut/makedecod_ut.sh v2.0.0/src/decod_ut/makedecod_ut.sh
-index 1b4637b..5bcac6b 100755
+index 1b4637b..9ac57ea 100755
 --- v2.0.0/src/decod_ut/makedecod_ut.sh
 +++ v2.0.0/src/decod_ut/makedecod_ut.sh
 @@ -60,12 +60,12 @@ SHELL=/bin/sh
@@ -44,13 +53,13 @@ index 1b4637b..5bcac6b 100755
  
  .f.a:
 -	ifort -c \$(FFLAGS) \$<
-+	$(FC) -c \$(FFLAGS) \$<
++	\$(FC) -c \$(FFLAGS) \$<
  	ar -ruv \$(AFLAGS) \$@ \$*.o
  	rm -f \$*.o
  
  .c.a:
 -	icc -c \$(CFLAGS) \$<
-+	$(CC) -c \$(CFLAGS) \$<
++	\$(CC) -c \$(CFLAGS) \$<
  	ar -ruv  \$(AFLAGS) \$@ \$*.o
  	rm -f \$*.o
  EOF
@@ -60,7 +69,7 @@ index 1b4637b..5bcac6b 100755
  export AFLAGS=" "
 -make -f make.libdecod_ut
 +
-+if [ "$COMP" = "gnu" ]
++if [ "$COMP" = "gnu" ]; then
 +  CC=gcc FC=gfortran make -f make.libdecod_ut
 +else
 +  CC=icc FC=ifort make -f make.libdecod_ut

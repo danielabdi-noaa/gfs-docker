@@ -8,6 +8,9 @@ INSTALL_DIR=/usr/local
 SRC_DIR=/opt
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_DIR/lib
 
+#use make
+ln -sf /usr/bin/make /usr/bin/gmake
+
 ##############
 # Compiler
 ##############
@@ -89,7 +92,8 @@ cd ${SRC_DIR}/NCEPLIBS-w3nco && \
 cd ${SRC_DIR}/NCEPLIBS-sp && COMP=${COMP} ./makelibsp.sh_Linux && cd ..
 
 #g2 
-cd ${SRC_DIR}/NCEPLIBS-g2 && COMP=${COMP} source ./modulefiles/g2.linux && cd src && COMP=${COMP} ./makeg2lib_linux.sh && cd ..
+cd ${SRC_DIR}/NCEPLIBS-g2 && COMP=${COMP} source ./modulefiles/g2.linux \
+	&& cd src && COMP=${COMP} bash ./makeg2lib_linux.sh && cd ..
 
 #prod_util
 cd ${SRC_DIR}/NCEPLIBS-prod_util/sorc && \
@@ -133,5 +137,6 @@ cd $SRC_DIR && git clone https://github.com/Unidata/gempak.git GEMPAK7 && \
     . ./Gemenviron.profile && make everything && cd ..
 
 #graphics
-cd ${SRC_DIR}/NCEPLIBS-graphics/v2.0.0/src && COMP=${COMP} ./compile_all_graphics_lib_wcoss.sh linux && cd ../../../
+cd ${SRC_DIR}/NCEPLIBS-graphics/v2.0.0/src && \
+   GFS_LIBS_DIR=/opt COMP=${COMP} ./compile_all_graphics_lib_wcoss.sh linux && cd ../../../
 
