@@ -21,6 +21,7 @@ RUN apt-get update -y && \
         git \
         wget \
         vim \
+        patch \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/build_mpi.sh /opt

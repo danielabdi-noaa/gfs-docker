@@ -23,11 +23,28 @@ cd $SRC_DIR && \
     cd .. && \
     rm -fr ${VER}
 
+##########################
+#  checkout fv3gfs.fd
+##########################
+topdir=${SRC_DIR}
+
+echo fv3gfs checkout ...
+if [[ ! -d fv3gfs.fd ]] ; then
+    rm -f ${topdir}/checkout-fv3gfs.log
+    git clone https://github.com/ufs-community/ufs-weather-model NEMSfv3gfs >> ${topdir}/checkout-fv3gfs.log 2>&1
+    cd NEMSfv3gfs
+    git checkout GFS.v16.0.0
+    git submodule update --init --recursive
+    cd ${topdir}
+else
+    echo 'Skip.  Directory fv3gfs.fd already exists.'
+fi
+
+./patch_fv3.sh
 
 ##########################
-#  NEMSfv3gfs
+#  build fv3gfs.fd
 ##########################
-
 if [ "$COMP" = "intel" ]; then
     export CC=mpiicc
     export CXX=mpiicpc

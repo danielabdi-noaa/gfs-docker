@@ -4,27 +4,9 @@ Included are scripts for generating Docker images for fv3gfs using either the GN
 
 ## Requirements
 Docker should be already installed on the system to generate images.
-You need to have access to NEMSfv3gfs source code. If you want to compile the whole global-workflow, you will
-need access to that repositiory with its components (including GSI) etc.
-
-## Preparing NEMSfv3gfs and/or global-workflow
-
-You would need to clone the NEMSfv3gfs repository from vlab and put it in the main directory.
-If you have already setup gerrit for ssh clone, this is how to do it
-
-    git clone --recursive gerrit:NEMSfv3gfs
-
-We have made changes to the code to add new linux.intel target, make it work with Intel 19.0 etc.
-Untile these are merged to the main branch, you will need to patch your freshly cloned repository with
-
-    ./patch_fv3.sh
-
-For global-workflow, you can clone our modified repository
-    
-    git clone --recursive https://github.com/NOAA-GSD/global-workflow.git
-
-and checkout the feature/linux-target branch. You would still need access to private repositories GSI, NEMSfv3gfs etc.
-
+To compile containers for the ufs-weather-model, you don't need to have access to private repositories.
+However, if you want to compile the whole global-workflow, you will need access to that repositiory with 
+its components including GSI and others.
 
 ## Compiling
 

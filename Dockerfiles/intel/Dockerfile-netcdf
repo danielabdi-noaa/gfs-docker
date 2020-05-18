@@ -21,6 +21,7 @@ RUN dnf update -y && \
         which \
         wget \
         vim \
+        patch \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/intel_comp.sh /opt

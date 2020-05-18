@@ -2,8 +2,8 @@ ARG REPO
 FROM ${REPO}/esmf-intel:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
-RUN dfn update -y && \
-    dfn install -y \
+RUN dnf update -y && \
+    dnf install -y --enablerepo=PowerTools \
         redhat-lsb-core \
         curl-devel \
         blas-devel \
@@ -21,12 +21,12 @@ RUN dfn update -y && \
         libXtst  \
         cairo \
         cairo-devel \
-        libpixman \
+        pixman-devel \
         xorg-x11-xbitmaps  \
         file \
         flex  \
         byacc  \
-        python-devel \
+        python3-devel \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/checkout_nceplibs.sh /opt

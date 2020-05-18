@@ -1,8 +1,8 @@
 diff --git src/incmake/confopt.mk src/incmake/confopt.mk
-index 31b981f..7bd23d8 100644
+index 9765365..1841837 100644
 --- src/incmake/confopt.mk
 +++ src/incmake/confopt.mk
-@@ -53,6 +53,10 @@ ifneq ($(CONFOPT),)
+@@ -40,6 +40,10 @@ ifneq ($(CONFOPT),)
      CONFIGURE_NEMS_FILE ?= configure.nems.Linux.gnu conf/configure.nems
      EXTERNALS_NEMS_FILE ?= externals.nems.Linux.gnu
  
@@ -13,3 +13,16 @@ index 31b981f..7bd23d8 100644
    else
      ifneq ($(wildcard $(ROOTDIR)/conf/$(CONFOPT)),)
        CONFIGURE_NEMS_FILE ?= $(CONFOPT)
+diff --git src/module_EARTH_GRID_COMP.F90 src/module_EARTH_GRID_COMP.F90
+index 6cac85e..456d902 100644
+--- src/module_EARTH_GRID_COMP.F90
++++ src/module_EARTH_GRID_COMP.F90
+@@ -2622,7 +2622,7 @@
+           return  ! bail out
+       endif
+       call NUOPC_FieldDictionarySetSyno( &
+-        standardNames = (/"ice_fraction",&
++        standardNames = (/"ice_fraction         ",&
+                           "sea_ice_concentration"/), rc=rc)
+       if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, &
+         line=__LINE__, &

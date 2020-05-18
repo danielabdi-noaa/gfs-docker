@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if ! [ -x "$(command -v docker)" ]; then
+  echo 'Error: Please install docker first.' >&2
+  exit 1
+fi
+
 REPO=${REPO:-dshawul}
 
 #build image

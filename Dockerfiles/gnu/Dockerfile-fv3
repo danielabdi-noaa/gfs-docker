@@ -2,7 +2,8 @@ ARG REPO
 FROM ${REPO}/esmf-gnu:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
-COPY ./NEMSfv3gfs /opt/NEMSfv3gfs
 COPY scripts/build_fv3.sh /opt
+COPY patch_fv3.sh /opt
+COPY patches/ /opt/patches
 
 RUN  cd /opt && ./build_fv3.sh
