@@ -1,4 +1,4 @@
-# Containers for fv3gfs
+# Containers for fv3gfs and global-workflow
 
 Included are scripts for generating Docker images for fv3gfs using either the GNU or Intel compiler collection.
 
@@ -7,6 +7,10 @@ Docker should be already installed on the system to generate images.
 To compile containers for the ufs-weather-model, you don't need to have access to private repositories.
 However, if you want to compile the whole global-workflow, you will need access to that repositiory with 
 its components including GSI and others.
+
+To compile global-workflow, first run `scrips/checkout_gfs.sh`. It will checkout the branch gfsv16b modified for linux targer.
+You also need to download NCAR's ncl tool and place it in the same directory with the same name `ncl`.
+Other than that, the same build procedure as above will build a gfs-gnu container.
 
 ## Compiling
 
@@ -52,4 +56,3 @@ Though, currently this breaks down when building HDF5 (will be installed in loca
 
 Also the Intel build does not work properly with OpenMP -- I suspect it is because of Intel 19.0 version that is probably
 untested. You can turn off OpenMP in conf/configure.fv3.linux.intel or don't use threads in your forecasts.
-   

@@ -31,3 +31,8 @@ build_image ${IMAGE_NAME} ${DOCKER_FILE}
 IMAGE_NAME=${REPO}/nceplibs-gnu
 DOCKER_FILE=Dockerfiles/gnu/Dockerfile-nceplibs
 build_image ${IMAGE_NAME} ${DOCKER_FILE}
+
+#gfs
+IMAGE_NAME=${REPO}/gfs-gnu
+DOCKER_FILE=Dockerfiles/gnu/Dockerfile-gfs
+build_image ${IMAGE_NAME} ${DOCKER_FILE}

@@ -1,0 +1,677 @@
+diff --git modulefiles/chgres_cube.linux.gnu modulefiles/chgres_cube.linux.gnu
+index ba76044c..ba4f546f 100644
+--- modulefiles/chgres_cube.linux.gnu
++++ modulefiles/chgres_cube.linux.gnu
+@@ -1,23 +1,3 @@
+-#############################################################
+-## chgres_cube component - linux.gnu
+-#############################################################
+-
+-export IP_INCd=${NCEPLIBS}/ip/include_d
+-export NEMSIO_INC=${NCEPLIBS}/nemsio/include
+-export SFCIO_INC4=${NCEPLIBS}/sfcio/include_4
+-export SIGIO_INC4=${NCEPLIBS}/sigio/include_4
+-
+-export BACIO_LIB4=${NCEPLIBS}/bacio/lib/libbacio_v2.1.0_4.a
+-export IP_LIBd=${NCEPLIBS}/ip/lib/libip_v3.0.0_d.a
+-export NEMSIO_LIB=${NCEPLIBS}/nemsio/lib/libnemsio_v2.2.3.a
+-export SFCIO_LIB4=${NCEPLIBS}/sfcio/lib/libsfcio_v1.1.0_4.a
+-export SIGIO_LIB4=${NCEPLIBS}/sigio/lib/libsigio_v2.1.0_4.a
+-export SP_LIBd=${NCEPLIBS}/sp/lib/libsp_v2.0.2_d.a
+-export W3NCO_LIBd=${NCEPLIBS}/w3nco/lib/libw3nco_v2.0.6_d.a
+-
+-export WGRIB2API_INC=${WGRIB2_DIR}/include
+-export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
+-
+ export FCOMP=mpif90
+ export FFLAGS="-O3 -g -fbacktrace -fdefault-real-8 -ffree-line-length-none -fopenmp -fconvert=big-endian"
+ # for debugging
+diff --git modulefiles/chgres_cube.linux.intel modulefiles/chgres_cube.linux.intel
+index 9af64a3b..4eeb5224 100644
+--- modulefiles/chgres_cube.linux.intel
++++ modulefiles/chgres_cube.linux.intel
+@@ -1,23 +1,3 @@
+-#############################################################
+-## chgres_cube component - linux.intel
+-#############################################################
+-
+-export IP_INCd=${NCEPLIBS}/ip/include_d
+-export NEMSIO_INC=${NCEPLIBS}/nemsio/include
+-export SFCIO_INC4=${NCEPLIBS}/sfcio/include_4
+-export SIGIO_INC4=${NCEPLIBS}/sigio/include_4
+-
+-export BACIO_LIB4=${NCEPLIBS}/bacio/lib/libbacio_v2.1.0_4.a
+-export IP_LIBd=${NCEPLIBS}/ip/lib/libip_v3.0.0_d.a
+-export NEMSIO_LIB=${NCEPLIBS}/nemsio/lib/libnemsio_v2.2.3.a
+-export SFCIO_LIB4=${NCEPLIBS}/sfcio/lib/libsfcio_v1.1.0_4.a
+-export SIGIO_LIB4=${NCEPLIBS}/sigio/lib/libsigio_v2.1.0_4.a
+-export SP_LIBd=${NCEPLIBS}/sp/lib/libsp_v2.0.2_d.a
+-export W3NCO_LIBd=${NCEPLIBS}/w3nco/lib/libw3nco_v2.0.6_d.a
+-
+-export WGRIB2API_INC=${WGRIB2_DIR}/include
+-export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
+-
+ export FCOMP=mpif90
+ export FFLAGS="-O3 -fp-model source -g -traceback -r8 -i4 -qopenmp -convert big_endian -assume byterecl"
+ # for debugging
+diff --git modulefiles/fv3gfs/fre-nctools.linux.gnu modulefiles/fv3gfs/fre-nctools.linux.gnu
+new file mode 100644
+index 00000000..e69de29b
+diff --git modulefiles/fv3gfs/fre-nctools.linux.intel modulefiles/fv3gfs/fre-nctools.linux.intel
+new file mode 100644
+index 00000000..e69de29b
+diff --git modulefiles/fv3gfs/global_chgres.linux.gnu modulefiles/fv3gfs/global_chgres.linux.gnu
+new file mode 100644
+index 00000000..cfc2227e
+--- /dev/null
++++ modulefiles/fv3gfs/global_chgres.linux.gnu
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for chgres on Linux with gcc/gfortran"
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCMP=gfortran
+diff --git modulefiles/fv3gfs/global_chgres.linux.intel modulefiles/fv3gfs/global_chgres.linux.intel
+new file mode 100644
+index 00000000..7df462e1
+--- /dev/null
++++ modulefiles/fv3gfs/global_chgres.linux.intel
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for chgres on Linux with gcc/gfortran"
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCMP=ifort
+diff --git modulefiles/fv3gfs/global_cycle.linux.gnu modulefiles/fv3gfs/global_cycle.linux.gnu
+new file mode 100644
+index 00000000..e4a46899
+--- /dev/null
++++ modulefiles/fv3gfs/global_cycle.linux.gnu
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for cycle on Linux with gcc/gfortran"
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCMP=mpif90
+diff --git modulefiles/fv3gfs/global_cycle.linux.intel modulefiles/fv3gfs/global_cycle.linux.intel
+new file mode 100644
+index 00000000..5b4be0de
+--- /dev/null
++++ modulefiles/fv3gfs/global_cycle.linux.intel
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for cycle on Linux with gcc/gfortran"
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCMP=mpiifort
+diff --git modulefiles/fv3gfs/nst_tf_chg.linux.gnu modulefiles/fv3gfs/nst_tf_chg.linux.gnu
+new file mode 100644
+index 00000000..d7d10611
+--- /dev/null
++++ modulefiles/fv3gfs/nst_tf_chg.linux.gnu
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCOMP=gfortran
++export FFLAGS="-O3 -g -fdefault-real-8"
++# for debugging
++#export FFLAGS="-g -r8 -i4 -warn unused -check bounds"
+diff --git modulefiles/fv3gfs/nst_tf_chg.linux.intel modulefiles/fv3gfs/nst_tf_chg.linux.intel
+new file mode 100644
+index 00000000..8fb4245e
+--- /dev/null
++++ modulefiles/fv3gfs/nst_tf_chg.linux.intel
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++export NETCDF_INCLUDE="-I${NETCDF}/include"
++export NETCDF_LDFLAGS_F="-L${NETCDF}/lib -lnetcdf -lnetcdff -L${HDF5}/lib -lhdf5 -lhdf5_fortran"
++
++export FCOMP=ifort
++export FFLAGS="-O3 -fp-model precise -g -r8 -i4"
++# for debugging
++#export FFLAGS="-g -r8 -i4 -warn unused -check bounds"
+diff --git modulefiles/fv3gfs/orog.linux.gnu modulefiles/fv3gfs/orog.linux.gnu
+new file mode 100644
+index 00000000..a9bf588e
+--- /dev/null
++++ modulefiles/fv3gfs/orog.linux.gnu
+@@ -0,0 +1 @@
++#!/bin/bash
+diff --git modulefiles/fv3gfs/orog.linux.intel modulefiles/fv3gfs/orog.linux.intel
+new file mode 100644
+index 00000000..a9bf588e
+--- /dev/null
++++ modulefiles/fv3gfs/orog.linux.intel
+@@ -0,0 +1 @@
++#!/bin/bash
+diff --git modulefiles/module_nemsutil.linux.gnu modulefiles/module_nemsutil.linux.gnu
+new file mode 100644
+index 00000000..e05b5e5d
+--- /dev/null
++++ modulefiles/module_nemsutil.linux.gnu
+@@ -0,0 +1,8 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for nems utils on Linux with gcc/gfortran"
++
++export FCMP=gfortran
+diff --git modulefiles/module_nemsutil.linux.intel modulefiles/module_nemsutil.linux.intel
+new file mode 100644
+index 00000000..77315b85
+--- /dev/null
++++ modulefiles/module_nemsutil.linux.intel
+@@ -0,0 +1,8 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for nems utils on Linux with gcc/gfortran"
++
++export FCMP=ifort
+diff --git modulefiles/modulefile.global_emcsfc_ice_blend.linux.gnu modulefiles/modulefile.global_emcsfc_ice_blend.linux.gnu
+new file mode 100644
+index 00000000..ac78041c
+--- /dev/null
++++ modulefiles/modulefile.global_emcsfc_ice_blend.linux.gnu
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for emcfc on Linux with gcc/gfortran"
++
++export FFLAGS="-O0"
++export FCOMP=gfortran
+diff --git modulefiles/modulefile.global_emcsfc_ice_blend.linux.intel modulefiles/modulefile.global_emcsfc_ice_blend.linux.intel
+new file mode 100644
+index 00000000..e8101cbb
+--- /dev/null
++++ modulefiles/modulefile.global_emcsfc_ice_blend.linux.intel
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for emcfc on Linux with gcc/gfortran"
++
++export FCOMP=ifort
++export FFLAGS="-O0 -i4"
+diff --git modulefiles/modulefile.global_emcsfc_snow2mdl.linux.gnu modulefiles/modulefile.global_emcsfc_snow2mdl.linux.gnu
+new file mode 100644
+index 00000000..ac29228b
+--- /dev/null
++++ modulefiles/modulefile.global_emcsfc_snow2mdl.linux.gnu
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for emcfc on Linux with gcc/gfortran"
++
++export FCOMP=gfortran
++export FFLAGS="-O0 -I${IP_INCd} -fdefault-real-8 -fopenmp -ffree-form -fconvert=big-endian"
+diff --git modulefiles/modulefile.global_emcsfc_snow2mdl.linux.intel modulefiles/modulefile.global_emcsfc_snow2mdl.linux.intel
+new file mode 100644
+index 00000000..1bfef1e7
+--- /dev/null
++++ modulefiles/modulefile.global_emcsfc_snow2mdl.linux.intel
+@@ -0,0 +1,9 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for emcfc on Linux with gcc/gfortran"
++
++export FCOMP=ifort
++export FFLAGS="-O0 -r8 -i4 -FR -I${IP_INCd} -qopenmp -convert big_endian -assume byterecl"
+diff --git modulefiles/modulefile.sfc_climo_gen.linux.gnu modulefiles/modulefile.sfc_climo_gen.linux.gnu
+new file mode 100644
+index 00000000..0b11aada
+--- /dev/null
++++ modulefiles/modulefile.sfc_climo_gen.linux.gnu
+@@ -0,0 +1,2 @@
++export FCOMP=mpif90
++export FFLAGS="-O3 -g -fdefault-real-8 -fconvert=big-endian"
+diff --git modulefiles/modulefile.sfc_climo_gen.linux.intel modulefiles/modulefile.sfc_climo_gen.linux.intel
+new file mode 100644
+index 00000000..f079e130
+--- /dev/null
++++ modulefiles/modulefile.sfc_climo_gen.linux.intel
+@@ -0,0 +1,2 @@
++export FCOMP=mpiifort
++export FFLAGS="-O3 -fp-model=precise -g -traceback -r8 -i4 -convert big_endian"
+diff --git sorc/build_all_ufs_utils.sh sorc/build_all_ufs_utils.sh
+index 3d190f90..d45699ce 100755
+--- sorc/build_all_ufs_utils.sh
++++ sorc/build_all_ufs_utils.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ set -eu
+ #------------------------------------
+ # USER DEFINED STUFF:
+@@ -53,7 +53,7 @@ echo " .... Building chgres .... "
+ #------------------------------------
+ $Build_chgres_cube && {
+ echo " .... Building chgres_cube .... "
+-./build_chgres_cube.sh > $logs_dir/build_chgres_cube.log 2>&1
++#./build_chgres_cube.sh > $logs_dir/build_chgres_cube.log 2>&1
+ }
+ 
+ #------------------------------------
+@@ -93,7 +93,7 @@ echo " .... Building emcsfc .... "
+ #------------------------------------
+ $Build_nctools && {
+ echo " .... Building fre-nctools .... "
+-./build_fre-nctools.sh > $logs_dir/build_fre-nctools.log 2>&1
++#./build_fre-nctools.sh > $logs_dir/build_fre-nctools.log 2>&1
+ }
+ 
+ #------------------------------------
+diff --git sorc/build_chgres.sh sorc/build_chgres.sh
+index 7dcb4291..e9ebda55 100755
+--- sorc/build_chgres.sh
++++ sorc/build_chgres.sh
+@@ -27,14 +27,28 @@ fi
+ #
+ cd global_chgres.fd
+ 
+-export FCMP=${FCMP:-ifort}
+-export FCMP95=$FCMP
++if [ "${target}" = "linux.gnu" ]; then
++
++export FCMP=${FCMP:-gfortran}
++export FFLAGSM="-std=legacy -O3 -fdefault-real-8 -fconvert=big-endian"
++export LDFLAGSM=${LDFLAGSM:-"-fopenmp"}
++export OMPFLAGM=${OMPFLAGM:-"-fopenmp"}
++
++GFSIO_INC4=${SIGIO_INC4}
++GFSIO_LIB4=${SIGIO_LIB4}
+ 
++else
++
++export FCMP=${FCMP:-ifort}
+ export FFLAGSM="-i4 -O3 -r8  -convert big_endian -fp-model precise"
+-export RECURS=
+ export LDFLAGSM=${LDFLAGSM:-"-qopenmp -auto"}
+ export OMPFLAGM=${OMPFLAGM:-"-qopenmp -auto"}
+ 
++fi
++
++export FCMP95=$FCMP
++export RECURS=
++
+ export INCS="-I${SIGIO_INC4} -I${SFCIO_INC4} -I${LANDSFCUTIL_INCd} \
+              -I${NEMSIO_INC} -I${NEMSIOGFS_INC} -I${GFSIO_INC4} -I${IP_INCd} ${NETCDF_INCLUDE}"
+ 
+diff --git sorc/build_cycle.sh sorc/build_cycle.sh
+index 75e80cc2..a221540a 100755
+--- sorc/build_cycle.sh
++++ sorc/build_cycle.sh
+@@ -24,4 +24,8 @@ if [ ! -d "../exec" ]; then
+ fi
+ 
+ cd ${cwd}/global_cycle.fd
++if [ "${target}" = "linux.gnu" ]; then
++./makefile.linux.gnu.sh
++else
+ ./makefile.sh
++fi
+diff --git sorc/build_nems_util.sh sorc/build_nems_util.sh
+index 3f2f1498..0ce28933 100755
+--- sorc/build_nems_util.sh
++++ sorc/build_nems_util.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#! /usr/bin/env bash
+ set -eux
+ 
+ source ./machine-setup.sh > /dev/null 2>&1
+@@ -24,7 +24,11 @@ fi
+ 
+ for prog in nemsio_get.fd  nemsio_read.fd nemsio_chgdate.fd mkgfsnemsioctl.fd ;do
+  cd ${cwd}/${prog}
+- make -f makefile
++ if [ "$target" = "linux.gnu" ] ; then
++   make -f makefile.linux.gnu
++ else
++   make -f makefile
++ fi
+ done
+ 
+ exit
+diff --git sorc/build_orog.sh sorc/build_orog.sh
+index c1cc33a8..355f3a86 100755
+--- sorc/build_orog.sh
++++ sorc/build_orog.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#! /usr/bin/env bash
+ #####################################################################################
+ # orog using module compile standard
+ # 10/10/2016 Fanglin.Yang@noaa.gov:    Create module load version
+@@ -47,16 +47,28 @@ elif [ $target = hera ]; then
+  INCS="-I${NETCDF}/include"
+  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
+  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
++elif [ "$target" = "linux.gnu" ]; then
++ INCS="-I${NETCDF}/include"
++ export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
++ export FFLAGSM="${INCS} -O3 -g -fdefault-real-8 -fno-range-check -fdec-math -fconvert=big-endian"
+ else
+  echo machine $target not found
+  exit 1
+ fi
+ 
++if [ "$target" = "linux.gnu" ]; then
++export FCMP=${FCMP:-gfortran}
++export FCMP95=$FCMP
++
++export LDFLAGSM="-fopenmp"
++export OMPFLAGM="-fopenmp"
++else
+ export FCMP=${FCMP:-ifort}
+ export FCMP95=$FCMP
+ 
+ export LDFLAGSM="-qopenmp -auto"
+ export OMPFLAGM="-qopenmp -auto"
++fi
+ 
+ make -f Makefile clobber
+ make -f Makefile
+diff --git sorc/chgres_cube.fd/static_data.F90 sorc/chgres_cube.fd/static_data.F90
+index 3bd29747..3d29e3c5 100644
+--- sorc/chgres_cube.fd/static_data.F90
++++ sorc/chgres_cube.fd/static_data.F90
+@@ -397,17 +397,28 @@
+  real(esmf_kind_r8)                 :: num_days, num_days_rec1, rinc(5)
+  real(esmf_kind_r8)                 :: weight_rec1, weight_rec2
+ 
+- if (trim(field) == 'facsf') filename = "/" // trim(cres_target_grid) // ".facsf." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'maximum_snow_albedo') filename = "/" // trim(cres_target_grid) // ".maximum_snow_albedo." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'slope_type') filename = "/" // trim(cres_target_grid) // ".slope_type." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'soil_type') filename = "/" // trim(cres_target_grid) // ".soil_type." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'substrate_temperature') filename = "/" // trim(cres_target_grid) // ".substrate_temperature." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'vegetation_greenness') filename = "/" // trim(cres_target_grid) // ".vegetation_greenness." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'vegetation_type') filename = "/" // trim(cres_target_grid) // ".vegetation_type." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'visible_black_sky_albedo') filename = "/" // trim(cres_target_grid) // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'visible_white_sky_albedo') filename = "/" // trim(cres_target_grid) // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'near_IR_black_sky_albedo') filename = "/" // trim(cres_target_grid) // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
+- if (trim(field) == 'near_IR_white_sky_albedo') filename = "/" // trim(cres_target_grid) // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'facsf') filename = "/" // trim(cres_target_grid) &
++         // ".facsf." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'maximum_snow_albedo') filename = "/" // trim(cres_target_grid) &
++         // ".maximum_snow_albedo." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'slope_type') filename = "/" // trim(cres_target_grid) &
++         // ".slope_type." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'soil_type') filename = "/" // trim(cres_target_grid) &
++         // ".soil_type." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'substrate_temperature') filename = "/" // trim(cres_target_grid) &
++         // ".substrate_temperature." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'vegetation_greenness') filename = "/" // trim(cres_target_grid) &
++         // ".vegetation_greenness." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'vegetation_type') filename = "/" // trim(cres_target_grid) &
++         // ".vegetation_type." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'visible_black_sky_albedo') filename = "/" // trim(cres_target_grid) &
++         // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'visible_white_sky_albedo') filename = "/" // trim(cres_target_grid) &
++         // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'near_IR_black_sky_albedo') filename = "/" // trim(cres_target_grid) &
++         // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
++ if (trim(field) == 'near_IR_white_sky_albedo') filename = "/" // trim(cres_target_grid) &
++         // ".snowfree_albedo." // trim(tiles_target_grid(tile)) // ".nc"
+ 
+  the_file = trim(fix_dir_target_grid) // trim(filename)
+ 
+diff --git sorc/global_chgres.fd/nrlmsise00_sub.f90 sorc/global_chgres.fd/nrlmsise00_sub.f90
+index 2738065c..fa336955 100755
+--- sorc/global_chgres.fd/nrlmsise00_sub.f90
++++ sorc/global_chgres.fd/nrlmsise00_sub.f90
+@@ -1666,8 +1666,8 @@
+       COMMON/METSEL/IMR 
+       common/pres/pr65(2,65),pr151(2,151) 
+       DATA IMR/0/ 
+-      DATA ISDATE/'01-F','EB-0','2   '/,ISTIME/'15:4','9:27'/ 
+-      DATA NAME/'MSIS','E-00'/ 
++      DATA ISDATE/4H01-F,4HEB-0,4H2   /,ISTIME/4H15:4,4H9:27/ 
++      DATA NAME/4HMSIS,4HE-00/ 
+ !         TEMPERATURE                                                   
+       DATA PT1/                                                         &
+         9.86573E-01, 1.62228E-02, 1.55270E-02,-1.04323E-01,-3.75801E-03,&
+diff --git sorc/global_cycle.fd/makefile.linux.gnu.sh sorc/global_cycle.fd/makefile.linux.gnu.sh
+new file mode 100755
+index 00000000..5aaeba50
+--- /dev/null
++++ sorc/global_cycle.fd/makefile.linux.gnu.sh
+@@ -0,0 +1,21 @@
++#!/bin/ksh
++set -x
++
++#-----------------------------------------------------
++#-use standard module.
++#-----------------------------------------------------
++
++export FCMP=${FCMP:-gfortran}
++
++##export DEBUG='-ftrapuv -check all -check nooutput_conversion -fp-stack-check -fstack-protector -traceback -g'
++export INCS="-I${IP_INCd} ${NETCDF_INCLUDE}"
++export FFLAGS="$INCS -O3 -fdefault-real-8 -fconvert=big-endian"
++export OMPFLAG=-fopenmp
++export LDFLG=-fopenmp
++
++export LIBSM="${W3NCO_LIBd} ${BACIO_LIB4} ${IP_LIBd} ${SP_LIBd} ${NETCDF_LDFLAGS_F}"
++
++make -f Makefile clean
++make -f Makefile
++make -f Makefile install
++make -f Makefile clean
+diff --git sorc/link_fixdirs.sh sorc/link_fixdirs.sh
+index d5fbc1cd..f60dfba7 100755
+--- sorc/link_fixdirs.sh
++++ sorc/link_fixdirs.sh
+@@ -19,7 +19,7 @@ if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
+     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet )'
+     exit 1
+ fi
+-if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet ]; then
++if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet -a $machine != linux.gnu -a $machine != linux.intel ]; then
+     set +x
+     echo '***ERROR*** unsupported machine'
+     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet )'
+@@ -43,6 +43,8 @@ elif [ $machine = "hera" ]; then
+     FIX_DIR="/scratch1/NCEPDEV/global/glopara/fix"
+ elif [ $machine = "jet" ]; then
+     FIX_DIR="/lfs3/projects/hfv3gfs/glopara/git/fv3gfs/fix"
++elif [ $machine = "linux.gnu" ] || [ $machine = "linux.intel" ]; then
++    FIX_DIR="/fix"
+ fi
+ cd ${pwd}/../fix                ||exit 8
+ for dir in fix_am fix_fv3 fix_orog fix_fv3_gmted2010 fix_sfc_climo; do
+diff --git sorc/machine-setup.sh sorc/machine-setup.sh
+index 48b2ee1b..0ab25ed2 100644
+--- sorc/machine-setup.sh
++++ sorc/machine-setup.sh
+@@ -109,8 +109,12 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
+     fi
+     target=gaea
+     module purge
+-elif [[ "$(hostname)" =~ "odin" ]]; then
+-    target="odin"
++elif [[ -d /dev ]] ; then
++    if [[ -d /opt/intel ]]; then
++        target=linux.intel
++    else
++        target=linux.gnu
++    fi
+ else
+     echo WARNING: UNKNOWN PLATFORM 1>&2
+ fi
+diff --git sorc/mkgfsnemsioctl.fd/makefile.linux.gnu sorc/mkgfsnemsioctl.fd/makefile.linux.gnu
+new file mode 100755
+index 00000000..2b08fef3
+--- /dev/null
++++ sorc/mkgfsnemsioctl.fd/makefile.linux.gnu
+@@ -0,0 +1,10 @@
++SHELL   =/bin/ksh
++EXEC    =../../exec/mkgfsnemsioctl
++FOPTS   = -O -ffree-form -I$(NEMSIO_INC)
++LOPTS   = $(OPTS)
++LIBS    = $(NEMSIO_LIB) $(BACIO_LIB4) $(W3NCO_LIBd)
++OBJS = mkgfsnemsioctl.o
++SRCS = mkgfsnemsioctl.f
++# *************************************************************************
++all: $(SRCS)
++	$(FCMP) $(FOPTS) $(LOPTS) ${SRCS} -o $(EXEC) $(LIBS)
+diff --git sorc/nemsio_chgdate.fd/makefile.linux.gnu sorc/nemsio_chgdate.fd/makefile.linux.gnu
+new file mode 100755
+index 00000000..234ec47a
+--- /dev/null
++++ sorc/nemsio_chgdate.fd/makefile.linux.gnu
+@@ -0,0 +1,10 @@
++EXEC    =../../exec/nemsio_chgdate
++FOPTS   =-O -ffree-form -I$(NEMSIO_INC) -fconvert=big-endian
++LOPTS   = $(OPTS)
++LIBS    =$(NEMSIO_LIB) $(BACIO_LIB4)
++OBJS = nemsio_chgdate.o
++SRCS = nemsio_chgdate.f90
++# *************************************************************************
++all: ${OBJS}
++$(OBJS): $(SRCS)
++	$(FCMP)  $(FOPTS) $(LOPTS) $(SRCS) -o $(EXEC) $(LIBS)
+diff --git sorc/nemsio_chgdate.fd/nemsio_chgdate.f90 sorc/nemsio_chgdate.fd/nemsio_chgdate.f90
+index 23eaa728..5941712b 100644
+--- sorc/nemsio_chgdate.fd/nemsio_chgdate.f90
++++ sorc/nemsio_chgdate.fd/nemsio_chgdate.f90
+@@ -60,11 +60,11 @@ write(6,'(A,7(1X,I6))') 'OLD idate  = ', idate
+ write(6,'(A,I4)') 'OLD nfhour = ', nfhour
+ 
+ ! Replace old date with new dates
+-read(idatestr(1:4), '(I)') idate(1)
+-read(idatestr(5:6), '(I)') idate(2)
+-read(idatestr(7:8), '(I)') idate(3)
+-read(idatestr(9:10), '(I)')idate(4)
+-read(nfhourstr, '(I)') nfhour
++read(idatestr(1:4), '(I4)') idate(1)
++read(idatestr(5:6), '(I2)') idate(2)
++read(idatestr(7:8), '(I2)') idate(3)
++read(idatestr(9:10), '(I2)')idate(4)
++read(nfhourstr, '(I2)') nfhour
+ 
+ write(6,'(A,7(1X,I6))') 'NEW idate  = ', idate
+ write(6,'(A,I4)') 'NEW nfhour = ', nfhour
+diff --git sorc/nemsio_get.fd/makefile.linux.gnu sorc/nemsio_get.fd/makefile.linux.gnu
+new file mode 100755
+index 00000000..d2af75df
+--- /dev/null
++++ sorc/nemsio_get.fd/makefile.linux.gnu
+@@ -0,0 +1,10 @@
++EXEC    =../../exec/nemsio_get
++FOPTS   =-O -ffree-form -I$(NEMSIO_INC) -fconvert=big-endian
++LOPTS   = $(OPTS)
++LIBS    =$(NEMSIO_LIB) $(BACIO_LIB4) $(W3NCO_LIBd)
++OBJS = nemsio_get.o
++SRCS = nemsio_get.f
++# *************************************************************************
++all: ${OBJS}
++$(OBJS): $(SRCS)
++	$(FCMP)  $(FOPTS) $(LOPTS) $(SRCS) -o $(EXEC) $(LIBS)
+diff --git sorc/nemsio_read.fd/makefile.linux.gnu sorc/nemsio_read.fd/makefile.linux.gnu
+new file mode 100755
+index 00000000..54989091
+--- /dev/null
++++ sorc/nemsio_read.fd/makefile.linux.gnu
+@@ -0,0 +1,13 @@
++SHELL  =/bin/sh
++EXEC   =../../exec/nemsio_read
++FOPTS  = -O -ffree-form -I$(NEMSIO_INC)
++LOPTS  = $(OPTS)
++LIBS   = $(NEMSIO_LIB) $(BACIO_LIB4) $(W3NCO_LIBd)
++OBJS = nemsio_read.o
++SRCS = nemsio_read.f
++# *************************************************************************
++all: $(OBJS)
++
++$(OBJS): $(SRCS)
++	$(FCMP)  $(FOPTS) $(LOPTS) $(SRCS) -o $(EXEC) $(LIBS)
++
+diff --git sorc/orog.fd/mtnlm7_oclsm.f sorc/orog.fd/mtnlm7_oclsm.f
+index a910616e..acd92217 100755
+--- sorc/orog.fd/mtnlm7_oclsm.f
++++ sorc/orog.fd/mtnlm7_oclsm.f
+@@ -4414,10 +4414,10 @@ c
+       data inaq3/x'FFC00000'/
+       data inaq4/x'FFFFFFFF'/
+ c
+-      real(kind=8)a(l),rtc,t1,t2
++      real(kind=8)a(l),t1,t2!,rtc
+       character*24 cn
+       character*(*) c
+-      t1=rtc()
++      !t1=rtc()
+ cgwv        print *, ' nanc call ',c
+       do k=1,l
+       word=a(k)
+@@ -4434,12 +4434,12 @@ cgwv        print *, ' nanc call ',c
+ 
+  101  format(e20.10)
+       end do
+-      t2=rtc()
++      !t2=rtc()
+ cgwv      print 102,l,t2-t1,c
+  102  format(' time to check ',i9,' words is ',f10.4,' ',a24)
+       return
+        end
+-      real function timef
++      real function timef()
+       character(8) :: date
+       character(10) :: time
+       character(5) :: zone
+diff --git sorc/sfc_climo_gen.fd/makefile sorc/sfc_climo_gen.fd/makefile
+index 46d85319..db21897d 100755
+--- sorc/sfc_climo_gen.fd/makefile
++++ sorc/sfc_climo_gen.fd/makefile
+@@ -14,7 +14,7 @@ OBJS = driver.o \
+        interp.o
+ 
+ $(CMD):	$(OBJS)
+-	$(FCOMP) $(FFLAGS) $(ESMF_F90COMPILEPATHS) -o $(CMD) $(OBJS) $(ESMF_F90LINKPATHS) $(ESMF_F90LINKRPATHS) $(ESMF_F90ESMFLINKLIBS) -g -traceback
++	$(FCOMP) $(FFLAGS) $(ESMF_F90COMPILEPATHS) -o $(CMD) $(OBJS) $(ESMF_F90LINKPATHS) $(ESMF_F90LINKRPATHS) $(ESMF_F90ESMFLINKLIBS) -g
+ 
+ interp.o:  source_grid.o model_grid.o utils.o interp.F90
+ 	$(FCOMP) $(FFLAGS) $(ESMF_F90COMPILEPATHS) -c interp.F90

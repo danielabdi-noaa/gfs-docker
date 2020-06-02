@@ -1,8 +1,48 @@
+diff --git fv3_cap.F90 fv3_cap.F90
+index b9162a8..30bd783 100644
+--- fv3_cap.F90
++++ fv3_cap.F90
+@@ -1118,7 +1118,7 @@ module fv3gfs_cap_mod
+          timerhi = mpi_wtime()
+ !         if (mype == 0 .or. mype == lead_wrttask(1)) print *,' aft fcst run alarm is on, na=',na,'mype=',mype
+ 
+-         call ESMF_VMEpochEnter(epoch=ESMF_VMEpoch_Buffer, rc=rc)
++         !call ESMF_VMEpochEnter(epoch=ESMF_VMEpoch_Buffer, rc=rc)
+          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
+          do i=1, FBCount
+ !
+@@ -1131,7 +1131,7 @@ module fv3gfs_cap_mod
+ !
+ !end FBcount
+          enddo
+-         call ESMF_VMEpochExit(rc=rc)
++         !call ESMF_VMEpochExit(rc=rc)
+          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
+ 
+          if (mype == 0 .or. mype == lead_wrttask(n_group).or.mype==last_wrttask(n_group)) print *,'aft fldbdlregrid,na=',na,  &
+@@ -1412,7 +1412,7 @@ module fv3gfs_cap_mod
+        output: IF(lalarm .or. na==first_kdt ) then
+ 
+          timerhi = mpi_wtime()
+-         call ESMF_VMEpochEnter(epoch=ESMF_VMEpoch_Buffer, rc=rc)
++         !call ESMF_VMEpochEnter(epoch=ESMF_VMEpoch_Buffer, rc=rc)
+          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
+          do i=1, FBCount
+ !
+@@ -1425,7 +1425,7 @@ module fv3gfs_cap_mod
+ !
+ !end FBcount
+          enddo
+-         call ESMF_VMEpochExit(rc=rc)
++         !call ESMF_VMEpochExit(rc=rc)
+          if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
+          if (mype == 0 .or. mype == lead_wrttask(n_group)) print *,'aft fieldbundleregrid,na=',na,  &
+                                                                    ' time=', timerh- timerhi
 diff --git gfsphysics/GFS_layer/GFS_driver.F90 gfsphysics/GFS_layer/GFS_driver.F90
-index 3b6a943..fbfb358 100644
+index 28695eb..e0e98c2 100644
 --- gfsphysics/GFS_layer/GFS_driver.F90
 +++ gfsphysics/GFS_layer/GFS_driver.F90
-@@ -670,15 +670,15 @@ module GFS_driver
+@@ -717,15 +717,15 @@ module GFS_driver
      type(GFS_radtend_type),         intent(inout) :: Radtend
      type(GFS_diag_type),            intent(inout) :: Diag
  #else
@@ -27,7 +67,7 @@ index 3b6a943..fbfb358 100644
  #endif
      !--- local variables
 diff --git gfsphysics/GFS_layer/GFS_physics_driver.F90 gfsphysics/GFS_layer/GFS_physics_driver.F90
-index a547169..43281f8 100644
+index 06c710f..76bcaed 100644
 --- gfsphysics/GFS_layer/GFS_physics_driver.F90
 +++ gfsphysics/GFS_layer/GFS_physics_driver.F90
 @@ -462,12 +462,12 @@ module module_physics_driver
@@ -46,10 +86,10 @@ index a547169..43281f8 100644
        type(GFS_cldprop_type),         intent(inout) :: Cldprop
        type(GFS_radtend_type),         intent(inout) :: Radtend
 diff --git gfsphysics/GFS_layer/GFS_radiation_driver.F90 gfsphysics/GFS_layer/GFS_radiation_driver.F90
-index c7323d6..629e6a1 100644
+index 8df0142..799808f 100644
 --- gfsphysics/GFS_layer/GFS_radiation_driver.F90
 +++ gfsphysics/GFS_layer/GFS_radiation_driver.F90
-@@ -1043,14 +1043,14 @@
+@@ -1045,14 +1045,14 @@
        type(GFS_radtend_type),         intent(inout) :: Radtend
        type(GFS_diag_type),            intent(inout) :: Diag
  #else

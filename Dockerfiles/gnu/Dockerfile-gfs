@@ -1,0 +1,25 @@
+ARG REPO
+FROM ${REPO}/nceplibs-gnu:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+# global-workflow
+COPY ./global-workflow /opt/global-workflow
+COPY ./ncl /opt/ncl
+COPY ./patch_gfs.sh /opt/patch_gfs.sh
+COPY ./patch_fv3.sh /opt/patch_fv3.sh
+COPY ./scripts/build_gfs.sh /opt/build_gfs.sh
+
+# Build
+RUN cd /opt && ./patch_gfs.sh && \
+    cd global-workflow/sorc && bash ./build_all.sh && bash ./link_fv3gfs.sh emc linux.gnu
+
+## Rocoto
+#RUN apt-get -y update && \
+#    apt-get -y install ruby-dev python-pip bc && \
+#    pip install numpy && \
+#    cd /opt && git clone https://github.com/christopherwharrop/rocoto.git && \ 
+#    cd rocoto && ./INSTALL
+
+# .bashrc
+ARG PP=/etc/bash.bashrc
+RUN echo "GFS_LIBS_DIR=/opt && source /opt/global-workflow/modulefiles/setup.linux" >> $PP

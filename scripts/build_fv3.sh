@@ -33,7 +33,7 @@ if [[ ! -d fv3gfs.fd ]] ; then
     rm -f ${topdir}/checkout-fv3gfs.log
     git clone https://github.com/ufs-community/ufs-weather-model NEMSfv3gfs >> ${topdir}/checkout-fv3gfs.log 2>&1
     cd NEMSfv3gfs
-    git checkout GFS.v16.0.0
+    git checkout GFS.v16.0.4
     git submodule update --init --recursive
     cd ${topdir}
 else
@@ -67,5 +67,5 @@ export NEMS_COMPILER=${COMP}
 cd NEMSfv3gfs
 FV3=$( pwd -P )/FV3
 cd tests/
-./compile.sh "$FV3" linux.${COMP} "NCEP64LEV=Y HYDRO=N 32BIT=Y" 1 NO NO
+./compile.sh "$FV3" linux.${COMP} "WW3=N 32BIT=Y" 1 YES YES
 

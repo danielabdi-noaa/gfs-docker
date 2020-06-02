@@ -492,3 +492,4 @@ Then immediately afterwards we stop our compute fleet using pcluster
     $ pcluster stop mycluster
      Stopping compute fleet : mycluster
 
+If you don't need the cluster anymore, you can delete it with `pcluster delete mycluster`.
