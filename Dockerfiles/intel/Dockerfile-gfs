@@ -1,5 +1,5 @@
 ARG REPO
-FROM ${REPO}/nceplibs-gnu:latest
+FROM ${REPO}/nceplibs-intel:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 # global-workflow
@@ -8,10 +8,6 @@ COPY ./ncl /opt/ncl
 COPY ./patch_gfs.sh /opt/patch_gfs.sh
 COPY ./patch_fv3.sh /opt/patch_fv3.sh
 COPY ./scripts/build_gfs.sh /opt/build_gfs.sh
-
-# Build
-RUN cd /opt && ./patch_gfs.sh && \
-    cd global-workflow/sorc && bash ./build_all.sh && bash ./link_fv3gfs.sh emc linux.gnu
 
 ## Rocoto
 #RUN apt-get -y update && \
@@ -22,4 +18,4 @@ RUN cd /opt && ./patch_gfs.sh && \
 
 # .bashrc
 ARG PP=/etc/bash.bashrc
-RUN echo "GFS_LIBS_DIR=/opt && COMP=gnu source /opt/global-workflow/modulefiles/setup.linux" >> $PP
+RUN echo "GFS_LIBS_DIR=/opt && COMP=intel source /opt/global-workflow/modulefiles/setup.linux" >> $PP

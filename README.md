@@ -3,19 +3,34 @@
 Included are scripts for generating Docker images for fv3gfs using either the GNU or Intel compiler collection.
 
 ## Requirements
-Docker should be already installed on the system to generate images.
+Docker should be already installed on your system to generate the images.
 To compile containers for the ufs-weather-model, you don't need to have access to private repositories.
-However, if you want to compile the whole global-workflow, you will need access to that repositiory with 
-its components including GSI and others.
+However, for global-workflow GSI is still in vlab, so you will need access to that.
+Everything will be moved to github in a few days. 
 
-To compile global-workflow, first run `scrips/checkout_gfs.sh`. It will checkout the branch gfsv16b modified for linux targer.
+## Preparation
 You also need to download NCAR's ncl tool and place it in the same directory with the same name `ncl`.
-Other than that, the same build procedure as above will build a gfs-gnu container.
+Other than that, the same build procedure as below will build a gfs container.
+
+Clone this repository
+
+    ~$ git clone https://github.com/danielabdi-noaa/gfs-docker.git
+
+Checkout the branch gfsv16b modified for a linux target.
+Once GSI is moved to github this step will be moved to the Dockerfile so that it can be done automatically
+during build stage.
+
+    ~/gfs-docker$ ./scripts/checkout_gfs.sh
+
+Here is the content of my gfs-docker directory after checking out global-workflw and downloading ncl library.
+
+    ~/gfs-docker$ ls
+    AWS.md  build_gnu_images.sh  build_intel_images.sh  Dockerfiles  global-workflow  ncl  patches  patch_fv3.sh  patch_gfs.sh  README.md  scripts  setup.linux.gnu  setup.linux.intel
 
 ## Compiling
 
-You can compile with GNU or INTEL compiler collection as follows.
-To give your images a specific repository name, pass the respository name to the scripts as
+You can compile with GNU or INTEL compiler by executing one of the build scripts.
+In addition, to give your image a specific repository name, pass the respository name to the scripts as
     
     REPO=noaagsl ./build_gnu_images.sh
 
@@ -23,9 +38,9 @@ To give your images a specific repository name, pass the respository name to the
 
 Generating the GNU images is straightforward
 
-    ./build_gnu_images.sh
+    REPO=noaagsl ./build_gnu_images.sh
 
-This will generate four separate images for mpi+netcdf, ESMF, NEMSfv3gfs and NCEPLIBS needed for global-workflow libraries.
+This will generate five separate images for mpi+netcdf, ESMF, fv3, NCEPLIBS and GFSv16b.
 The OS within the container is ubuntu:18.04
 
 You can install a version of mpi you like by modifying `build_mpi.sh`

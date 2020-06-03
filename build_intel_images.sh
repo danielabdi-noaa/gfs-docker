@@ -41,3 +41,10 @@ IMAGE_NAME=${REPO}/nceplibs-intel
 DOCKER_FILE=Dockerfiles/intel/Dockerfile-nceplibs
 COMMAND="cd /opt; ./checkout_nceplibs.sh; source intel_comp.sh; COMP=${COMP} ./build_nceplibs.sh"
 build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"
+
+#gfs
+IMAGE_NAME=${REPO}/gfs-intel
+DOCKER_FILE=Dockerfiles/intel/Dockerfile-gfs
+COMMAND="cd /opt; source intel_comp.sh; ./patch_gfs.sh; cd global-workflow/sorc; ./build_all.sh; ./link_fv3gfs.sh emc linux.intel"
+build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"
+
