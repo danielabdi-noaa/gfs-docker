@@ -4,28 +4,6 @@ Included are scripts for generating Docker images for fv3gfs using either the GN
 
 ## Requirements
 Docker should be already installed on your system to generate the images.
-To compile containers for the ufs-weather-model, you don't need to have access to private repositories.
-However, for global-workflow GSI is still in vlab, so you will need access to that.
-Everything will be moved to github in a few days. 
-
-## Preparation
-You also need to download NCAR's ncl tool and place it in the same directory with the same name `ncl`.
-Other than that, the same build procedure as below will build a gfs container.
-
-Clone this repository
-
-    ~$ git clone https://github.com/danielabdi-noaa/gfs-docker.git
-
-Checkout the branch gfsv16b modified for a linux target.
-Once GSI is moved to github this step will be moved to the Dockerfile so that it can be done automatically
-during build stage.
-
-    ~/gfs-docker$ ./scripts/checkout_gfs.sh
-
-Here is the content of my gfs-docker directory after checking out global-workflw and downloading ncl library.
-
-    ~/gfs-docker$ ls
-    AWS.md  build_gnu_images.sh  build_intel_images.sh  Dockerfiles  global-workflow  ncl  patches  patch_fv3.sh  patch_gfs.sh  README.md  scripts  setup.linux.gnu  setup.linux.intel
 
 ## Compiling
 
