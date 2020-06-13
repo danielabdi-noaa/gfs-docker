@@ -305,10 +305,10 @@ index 3d190f90..d45699ce 100755
  
  #------------------------------------
 diff --git sorc/build_chgres.sh sorc/build_chgres.sh
-index 7dcb4291..e9ebda55 100755
+index 7dcb4291..a9e099a6 100755
 --- sorc/build_chgres.sh
 +++ sorc/build_chgres.sh
-@@ -27,14 +27,28 @@ fi
+@@ -27,14 +27,34 @@ fi
  #
  cd global_chgres.fd
  
@@ -321,11 +321,8 @@ index 7dcb4291..e9ebda55 100755
 +export LDFLAGSM=${LDFLAGSM:-"-fopenmp"}
 +export OMPFLAGM=${OMPFLAGM:-"-fopenmp"}
 +
-+GFSIO_INC4=${SIGIO_INC4}
-+GFSIO_LIB4=${SIGIO_LIB4}
- 
 +else
-+
+ 
 +export FCMP=${FCMP:-ifort}
  export FFLAGSM="-i4 -O3 -r8  -convert big_endian -fp-model precise"
 -export RECURS=
@@ -333,6 +330,15 @@ index 7dcb4291..e9ebda55 100755
  export OMPFLAGM=${OMPFLAGM:-"-qopenmp -auto"}
  
 +fi
++
++if [ "${target}" = "linux.gnu" ]; then
++    export NO_OMPFLAGM=
++else
++    export NO_OMPFLAGM="-qno-openmp-simd"
++fi
++
++GFSIO_INC4=${SIGIO_INC4}
++GFSIO_LIB4=${SIGIO_LIB4}
 +
 +export FCMP95=$FCMP
 +export RECURS=
@@ -377,7 +383,7 @@ index 3f2f1498..0ce28933 100755
  
  exit
 diff --git sorc/build_orog.sh sorc/build_orog.sh
-index c1cc33a8..355f3a86 100755
+index c1cc33a8..23f56f7c 100755
 --- sorc/build_orog.sh
 +++ sorc/build_orog.sh
 @@ -1,4 +1,4 @@
@@ -386,7 +392,12 @@ index c1cc33a8..355f3a86 100755
  #####################################################################################
  # orog using module compile standard
  # 10/10/2016 Fanglin.Yang@noaa.gov:    Create module load version
-@@ -47,16 +47,28 @@ elif [ $target = hera ]; then
+@@ -43,20 +43,32 @@ elif [ $target = jet ]; then
+  INCS="-I${NETCDF}/include"
+  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
+  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
+-elif [ $target = hera ]; then
++elif [ $target = hera -o "$target" = "linux.intel" ]; then
   INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
@@ -459,6 +470,27 @@ index 3bd29747..3d29e3c5 100644
  
   the_file = trim(fix_dir_target_grid) // trim(filename)
  
+diff --git sorc/global_chgres.fd/Makefile sorc/global_chgres.fd/Makefile
+index 3d002448..b50e76cb 100755
+--- sorc/global_chgres.fd/Makefile
++++ sorc/global_chgres.fd/Makefile
+@@ -24,6 +24,7 @@ LDR	=$(FCMP)
+ 
+ FFLAGS	=$(FFLAGSM)
+ OMPFLAG=$(OMPFLAGM)
++NO_OMPFLAG=$(NO_OMPFLAGM)
+ LDFLAGS	=$(LDFLAGSM)
+ 
+ CMD	=global_chgres
+@@ -39,7 +40,7 @@ nstio_module.o : nstio_module.f90
+ nsst_chgres.o : nsst_chgres.f90
+ 	$(FC90) $(FFLAGS) $(RECURS) -c nsst_chgres.f90
+ chgres_utils.o:	physcons.o funcphys.o chgres_utils.f90
+-	$(FC90) $(FFLAGS) $(RECURS) $(INCMOD) -c chgres_utils.f90
++	$(FC90) $(FFLAGS) $(NO_OMPFLAG) $(RECURS) $(INCMOD) -c chgres_utils.f90
+ nrlmsise00_sub.o:	nrlmsise00_sub.f90
+ 	$(FC90) $(FFLAGS)  $(RECURS) -c nrlmsise00_sub.f90
+ funcphys.o:     funcphys.f90 physcons.o machine_8.o
 diff --git sorc/global_chgres.fd/nrlmsise00_sub.f90 sorc/global_chgres.fd/nrlmsise00_sub.f90
 index 2738065c..fa336955 100755
 --- sorc/global_chgres.fd/nrlmsise00_sub.f90
@@ -524,10 +556,10 @@ index d5fbc1cd..f60dfba7 100755
  cd ${pwd}/../fix                ||exit 8
  for dir in fix_am fix_fv3 fix_orog fix_fv3_gmted2010 fix_sfc_climo; do
 diff --git sorc/machine-setup.sh sorc/machine-setup.sh
-index 48b2ee1b..0ab25ed2 100644
+index 48b2ee1b..379ef4e0 100644
 --- sorc/machine-setup.sh
 +++ sorc/machine-setup.sh
-@@ -109,8 +109,12 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
+@@ -109,8 +109,14 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
      fi
      target=gaea
      module purge
@@ -536,8 +568,10 @@ index 48b2ee1b..0ab25ed2 100644
 +elif [[ -d /dev ]] ; then
 +    if [[ -d /opt/intel ]]; then
 +        target=linux.intel
++        COMP=intel source ../../../modulefiles/setup.linux
 +    else
 +        target=linux.gnu
++        COMP=gnu source ../../../modulefiles/setup.linux
 +    fi
  else
      echo WARNING: UNKNOWN PLATFORM 1>&2

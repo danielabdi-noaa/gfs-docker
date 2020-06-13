@@ -1,7 +1,18 @@
 diff --git src/makebufrlib.sh src/makebufrlib.sh
-index 0512cdc..0c618b3 100755
+index 0512cdc..b49bec3 100755
 --- src/makebufrlib.sh
 +++ src/makebufrlib.sh
+@@ -22,8 +22,8 @@ OS=`uname`
+ hncc1="`hostname | cut -c1`"  # "v" = venus, "m" = mars, "l" = luna, "s" = surge, "t" = tide, "g" = gyre
+ if [ $OS = "Linux" ]
+ then
+-    export FC=ftn
+-    export CC=cc
++    export FC=ifort
++    export CC=icc
+     export AFLAGS=""
+     case ${COMP:?} in
+     intel|ips)
 @@ -51,6 +51,14 @@ then
              export CC=icc
          fi

@@ -21,10 +21,15 @@ index ebcef191..0f2efab5 100755
  if [[ $rc -ne 0 ]] ; then
      echo "Fatal error in building gldas."
 diff --git sorc/build_fv3.sh sorc/build_fv3.sh
-index 5659b533..16abe53a 100755
+index 5659b533..b5f3283f 100755
 --- sorc/build_fv3.sh
 +++ sorc/build_fv3.sh
-@@ -21,5 +21,5 @@ if [ $target = hera ]; then target=hera.intel ; fi
+@@ -18,8 +18,10 @@ fi
+ 
+ if [ $target = hera ]; then target=hera.intel ; fi
+ 
++if [ "$target" = "linux.intel" ]; then export NEMS_COMPILER=intel ; fi
++
  cd fv3gfs.fd/
  FV3=$( pwd -P )/FV3
  cd tests/
