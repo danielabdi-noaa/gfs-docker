@@ -19,7 +19,7 @@ cd $SRC_DIR && \
     cd $VER && \
     git checkout 4fc8335c42a54db77b6586189 -b temp
     mkdir $INSTALL_DIR/$VER && \
-    yes | ./make_ncep_libs.sh -s linux -c ${COMP} -d ${INSTALL_DIR}/${VER} -o 1 && \
+    yes | ./make_ncep_libs.sh -s linux -c ${COMP} -d ${INSTALL_DIR}/${VER} -o 0 && \
     cd .. && \
     rm -fr ${VER}
 
