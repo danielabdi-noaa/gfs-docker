@@ -12,13 +12,6 @@ In addition, to give your image a specific repository name, pass the respository
     
     REPO=noaagsl ./build_gnu_images.sh
 
-## Preparation
-For global-workflow you would need access to vlab for GSI, which is still not moved to github fully yet.
-So from the main directory, call
-
-    ./scripts/checkout_gfs.sh
-
-
 ### GNU
 
 Generating the GNU images is straightforward

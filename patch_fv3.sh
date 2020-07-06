@@ -1,4 +1,5 @@
 #!/bin/bash
+set -exo pipefail
 
 FV3DIR=${FV3DIR:-NEMSfv3gfs}
 

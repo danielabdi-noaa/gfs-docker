@@ -1,9 +1,12 @@
+# stage-1
 ARG REPO
+FROM ${REPO}/gfs-gnu:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+# stage-2
 FROM ${REPO}/esmf-gnu:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
-COPY scripts/build_fv3.sh /opt
-COPY patch_fv3.sh /opt
-COPY patches/ /opt/patches
-
-RUN  cd /opt && ./build_fv3.sh
+RUN mkdir -p /opt/exec
+COPY --from=0 /usr/local/NCEPlibs-20190820 /usr/local/NCEPlibs-20190820
+COPY --from=0 /opt/global-workflow/sorc/fv3gfs.fd/NEMS/exe/global_fv3gfs.x /opt/exec/global_fv3gfs.x

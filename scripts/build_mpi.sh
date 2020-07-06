@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -exo pipefail
 
 #install directory and compiler flag
 INSTALL_DIR=${INSTALL_DIR:-/usr/local}
