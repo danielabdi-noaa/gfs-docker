@@ -6,6 +6,7 @@ RUN dnf update -y && \
     dnf install -y --enablerepo=PowerTools \
         redhat-lsb-core \
         curl-devel \
+        lapack-devel \
         blas-devel \
         libpng-devel \
         bzip2-devel \

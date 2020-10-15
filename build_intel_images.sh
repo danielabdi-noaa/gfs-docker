@@ -60,3 +60,14 @@ DOCKER_FILE=Dockerfiles/intel/Dockerfile-fv3
 COMMAND="cd /opt; source intel_comp.sh; ./copy_deps.sh"
 build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"
 
+#ufs-utils
+IMAGE_NAME=${REPO}/ufs-utils-intel
+DOCKER_FILE=Dockerfiles/intel/Dockerfile-ufs-utils
+COMMAND="cd /opt; source intel_comp.sh; ./copy_deps.sh"
+build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"
+
+#gsi
+IMAGE_NAME=${REPO}/gsi-intel
+DOCKER_FILE=Dockerfiles/intel/Dockerfile-gsi
+COMMAND="cd /opt; source intel_comp.sh; ./copy_deps.sh"
+build_image ${IMAGE_NAME} ${DOCKER_FILE} "${COMMAND}"

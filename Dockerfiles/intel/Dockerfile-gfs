@@ -20,7 +20,7 @@ RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan  -p 29418 -t rsa vlab.ncep.noaa.gov >
 # mount ssh and secret ssh config file
 ARG GERRIT_ID
 RUN --mount=type=ssh,id=default \
-    --mount=type=secret,id=${GERRIT_ID},dst=/root/.ssh/config \
+    --mount=type=secret,id=gerrit,dst=/root/.ssh/config \
     cat /root/.ssh/config \
     && ssh-add -L \
     && cd /opt && ./checkout_gfs.sh

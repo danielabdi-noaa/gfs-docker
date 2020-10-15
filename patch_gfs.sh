@@ -1,5 +1,4 @@
 #!/bin/bash
-set -exo pipefail
 
 GFSDIR=${GFSDIR:-global-workflow}
 

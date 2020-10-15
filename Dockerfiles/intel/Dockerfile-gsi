@@ -1,0 +1,18 @@
+# stage-1
+ARG REPO
+FROM ${REPO}/gfs-intel:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+# stage-2
+FROM ${REPO}/esmf-intel:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN dnf update -y && \
+    dnf install -y --enablerepo=PowerTools \
+        lapack-devel \
+        blas-devel \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt/exec
+COPY --from=0 /etc/bashrc /etc/bashrc
+COPY --from=0 /opt/global-workflow/sorc/gsi.fd/exec /opt/exec

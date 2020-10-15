@@ -1,11 +1,9 @@
 #!/bin/bash
 
-set -exo pipefail
+set -ex
 
 export COMP=${COMP:-gnu}
 
-NPROCS=`nproc`
-export MAKEFLAGS="-j ${NPROCS}"
 #install directory and compiler flag
 INSTALL_DIR=${INSTALL_DIR:-/usr/local}
 SRC_DIR=${SRC_DIR:-/opt}

@@ -44,3 +44,12 @@ IMAGE_NAME=${REPO}/fv3-gnu
 DOCKER_FILE=Dockerfiles/gnu/Dockerfile-fv3
 build_image ${IMAGE_NAME} ${DOCKER_FILE}
 
+#ufs-utils
+IMAGE_NAME=${REPO}/ufs-utils-gnu
+DOCKER_FILE=Dockerfiles/gnu/Dockerfile-ufs-utils
+build_image ${IMAGE_NAME} ${DOCKER_FILE}
+
+#gsi
+IMAGE_NAME=${REPO}/gsi-gnu
+DOCKER_FILE=Dockerfiles/gnu/Dockerfile-gsi
+build_image ${IMAGE_NAME} ${DOCKER_FILE}

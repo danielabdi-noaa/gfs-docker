@@ -1,5 +1,5 @@
 #!/bin/bash
-set -exo pipefail
+set -ex
 
 export COMP=${COMP:-gnu}
 

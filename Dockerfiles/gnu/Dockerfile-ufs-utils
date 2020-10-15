@@ -1,0 +1,15 @@
+# stage-1
+ARG REPO
+FROM ${REPO}/gfs-gnu:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+# stage-2
+FROM ${REPO}/esmf-gnu:latest
+MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
+
+RUN mkdir -p /opt/exec
+COPY --from=0 /etc/bashrc /etc/bashrc
+COPY --from=0 /opt/global-workflow/sorc/ufs_utils.fd/exec /opt/exec
+COPY --from=0 /usr/local/lib/libjasper.so /usr/local/lib/libjasper.so
+COPY --from=0 /usr/local/lib/libjasper.so.4 /usr/local/lib/libjasper.so.4
+COPY --from=0 /usr/local/lib/libjasper.so.4.0.0 /usr/local/lib/libjasper.so.4.0.0
