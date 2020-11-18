@@ -1,25 +1,78 @@
-diff --git sorc/build_all.sh sorc/build_all.sh
-index ebcef191..0f2efab5 100755
---- sorc/build_all.sh
-+++ sorc/build_all.sh
-@@ -88,7 +88,7 @@ fi
- #------------------------------------
- $Build_ncep_post && {
- echo " .... Building ncep_post .... "
--./build_ncep_post.sh > $logs_dir/build_ncep_post.log 2>&1
-+#./build_ncep_post.sh > $logs_dir/build_ncep_post.log 2>&1
- rc=$?
- if [[ $rc -ne 0 ]] ; then
-     echo "Fatal error in building ncep_post."
-@@ -116,7 +116,7 @@ fi
- #------------------------------------
- $Build_gldas && {
- echo " .... Building gldas .... "
--./build_gldas.sh > $logs_dir/build_gldas.log 2>&1
-+#./build_gldas.sh > $logs_dir/build_gldas.log 2>&1
- rc=$?
- if [[ $rc -ne 0 ]] ; then
-     echo "Fatal error in building gldas."
+diff --git jobs/rocoto/getic.sh jobs/rocoto/getic.sh
+index 23607069..e308a4ca 100755
+--- jobs/rocoto/getic.sh
++++ jobs/rocoto/getic.sh
+@@ -110,15 +110,17 @@ if [ $ics_from = "opsgfs" ]; then
+     # Get initial conditions from HPSS
+     if [ $rc -ne 0 ]; then
+ 
++	source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++
+         # check if the tarball exists
+-        hsi ls -l $tarball
++        run_command hsi ls -l $tarball
+         rc=$?
+         if [ $rc -ne 0 ]; then
+             echo "$tarball does not exist and should, ABORT!"
+             exit $rc
+         fi
+         # get the tarball
+-        htar -xvf $tarball $flanal
++        run_command htar -xvf $tarball $flanal
+         rc=$?
+         if [ $rc -ne 0 ]; then
+             echo "untarring $tarball failed, ABORT!"
+@@ -158,15 +160,17 @@ elif [ $ics_from = "pargfs" ]; then
+     # Get initial conditions from HPSS from retrospective parallel
+     tarball="$HPSS_PAR_PATH/${CDATE}${CDUMP}.tar"
+ 
++    source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++
+     # check if the tarball exists
+-    hsi ls -l $tarball
++    run_command hsi ls -l $tarball
+     rc=$?
+     if [ $rc -ne 0 ]; then
+         echo "$tarball does not exist and should, ABORT!"
+         exit $rc
+     fi
+     # get the tarball
+-    htar -xvf $tarball $flanal
++    run_command htar -xvf $tarball $flanal
+     rc=$?
+     if [ $rc -ne 0 ]; then
+         echo "untarring $tarball failed, ABORT!"
+diff --git scripts/exgfs_postsnd.sh scripts/exgfs_postsnd.sh
+index 2fc8d911..663c4753 100755
+--- scripts/exgfs_postsnd.sh
++++ scripts/exgfs_postsnd.sh
+@@ -161,7 +161,9 @@ mv poe_col cmdfile
+ cat cmdfile
+ chmod +x cmdfile
+ 
+-${APRUN_POSTSNDCFP} cmdfile
++#launch job
++source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++run_command ${APRUN_POSTSNDCFP} cmdfile
+ 
+ sh $USHbufrsnd/gfs_bfr2gpk.sh
+ fi
+diff --git scripts/exglobal_fcst_nemsfv3gfs.sh scripts/exglobal_fcst_nemsfv3gfs.sh
+index 6ed55331..21ceeecc 100755
+--- scripts/exglobal_fcst_nemsfv3gfs.sh
++++ scripts/exglobal_fcst_nemsfv3gfs.sh
+@@ -1305,7 +1305,10 @@ fi
+ 
+ $NCP $FCSTEXECDIR/$FCSTEXEC $DATA/.
+ export OMP_NUM_THREADS=$NTHREADS_FV3
+-$APRUN_FV3 $DATA/$FCSTEXEC 1>&1 2>&2
++#launch job
++source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++run_command $APRUN_FV3 $DATA/$FCSTEXEC 1>&1 2>&2
++
+ export ERR=$?
+ export err=$ERR
+ $ERRSCRIPT || exit $err
 diff --git sorc/build_fv3.sh sorc/build_fv3.sh
 index 5659b533..b5f3283f 100755
 --- sorc/build_fv3.sh
@@ -36,3 +89,157 @@ index 5659b533..b5f3283f 100755
 -./compile.sh "$FV3" "$target" "WW3=Y 32BIT=Y" 1
 +./compile.sh "$FV3" "$target" "WW3=N 32BIT=Y" 1
  mv -f fv3_1.exe ../NEMS/exe/global_fv3gfs.x
+diff --git ush/rocoto/setup_expt.py ush/rocoto/setup_expt.py
+index 2abab60b..a421f51c 100755
+--- ush/rocoto/setup_expt.py
++++ ush/rocoto/setup_expt.py
+@@ -72,9 +72,12 @@ def edit_baseconfig():
+ 
+     base_config = '%s/config.base' % expdir
+ 
+-    here = os.path.dirname(__file__)
+-    top = os.path.abspath(os.path.join(
+-        os.path.abspath(here), '../..'))
++    if wfu.detectMachine() == 'LINUX':
++        top = '/opt/global-workflow'
++    else:
++        here = os.path.dirname(__file__)
++        top = os.path.abspath(os.path.join(
++            os.path.abspath(here), '../..'))
+ 
+     if os.path.exists(base_config):
+         os.unlink(base_config)
+@@ -141,6 +144,10 @@ link initial condition files from $ICSDIR to $COMROT'''
+     parser.add_argument('--cdump', help='CDUMP to start the experiment', type=str, required=False, default='gdas')
+     parser.add_argument('--gfs_cyc', help='GFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
+     parser.add_argument('--partition', help='partition on machine', type=str, required=False, default=None)
++    parser.add_argument('--ptmp', help='full path to PTMP', type=str, required=False, default=None)
++    parser.add_argument('--stmp', help='full path to STMP', type=str, required=False, default=None)
++    parser.add_argument('--homedir', help='full path to HOMEDIR', type=str, required=False, default=None)
++    parser.add_argument('--account', help='ACCOUNT to be used for running jobs', type=str, required=False, default=None)
+ 
+     args = parser.parse_args()
+ 
+@@ -193,7 +200,7 @@ link initial condition files from $ICSDIR to $COMROT'''
+       account = 'GFS-DEV'
+       queue = 'dev'
+       queue_arch = 'dev_transfer'
+-    elif machine == 'HERA':
++    elif machine == 'HERA' or machine == 'LINUX':
+       base_git = '/scratch1/NCEPDEV/global/glopara/git'
+       base_svn = '/scratch1/NCEPDEV/global/glopara/svn'
+       dmpdir = '/scratch1/NCEPDEV/global/glopara/dump'
+@@ -207,6 +214,15 @@ link initial condition files from $ICSDIR to $COMROT'''
+       queue = 'batch'
+       queue_arch = 'service'
+ 
++    if args.homedir:
++      homedir = args.homedir
++    if args.stmp:
++      stmp = args.stmp
++    if args.ptmp:
++      ptmp = args.ptmp
++    if args.account:
++      account = args.account
++
+     if args.icsdir is not None and not os.path.exists(icsdir):
+         msg = 'Initial conditions do not exist in %s' % icsdir
+         raise IOError(msg)
+diff --git ush/rocoto/setup_expt_fcstonly.py ush/rocoto/setup_expt_fcstonly.py
+index 65236719..23c7e62d 100755
+--- ush/rocoto/setup_expt_fcstonly.py
++++ ush/rocoto/setup_expt_fcstonly.py
+@@ -49,8 +49,11 @@ def edit_baseconfig():
+ 
+     base_config = '%s/config.base' % expdir
+ 
+-    here = os.path.dirname(__file__)
+-    top = os.path.abspath(os.path.join(os.path.abspath(here), '../..'))
++    if wfu.detectMachine() == 'LINUX':
++        top = '/opt/global-workflow'
++    else:
++        here = os.path.dirname(__file__)
++        top = os.path.abspath(os.path.join(os.path.abspath(here), '../..'))
+ 
+     # make a copy of the default before editing
+     shutil.copy(base_config, base_config + '.default')
+@@ -111,6 +114,10 @@ Create COMROT experiment directory structure'''
+     parser.add_argument('--configdir', help='full path to directory containing the config files', type=str, required=False, default=None)
+     parser.add_argument('--gfs_cyc', help='GFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
+     parser.add_argument('--partition', help='partition on machine', type=str, required=False, default=None)
++    parser.add_argument('--ptmp', help='full path to PTMP', type=str, required=False, default=None)
++    parser.add_argument('--stmp', help='full path to STMP', type=str, required=False, default=None)
++    parser.add_argument('--homedir', help='full path to HOMEDIR', type=str, required=False, default=None)
++    parser.add_argument('--account', help='ACCOUNT to be used for running jobs', type=str, required=False, default=None)
+ 
+     args = parser.parse_args()
+ 
+@@ -159,7 +166,7 @@ Create COMROT experiment directory structure'''
+       account = 'GFS-DEV'
+       queue = 'dev'
+       queue_arch = 'dev_transfer'
+-    elif machine == 'HERA':
++    elif machine == 'HERA' or machine == 'LINUX':
+       base_git = '/scratch1/NCEPDEV/global/glopara/git'
+       base_svn = '/scratch1/NCEPDEV/global/glopara/svn'
+       dmpdir = '/scratch1/NCEPDEV/global/glopara/dump'
+@@ -173,6 +180,15 @@ Create COMROT experiment directory structure'''
+       queue = 'batch'
+       queue_arch = 'service'
+ 
++    if args.homedir:
++      homedir = args.homedir
++    if args.stmp:
++      stmp = args.stmp
++    if args.ptmp:
++      ptmp = args.ptmp
++    if args.account:
++      account = args.account
++
+     # COMROT directory
+     create_comrot = True
+     if os.path.exists(comrot):
+diff --git ush/rocoto/workflow_utils.py ush/rocoto/workflow_utils.py
+index 6da0b6a3..fe8485f2 100755
+--- ush/rocoto/workflow_utils.py
++++ ush/rocoto/workflow_utils.py
+@@ -145,19 +145,7 @@ def config_parser(files):
+ 
+ def detectMachine():
+ 
+-    machines = ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3', 'LINUX']
+-
+-    if os.path.exists('/scratch1/NCEPDEV'):
+-        return 'HERA'
+-    elif os.path.exists('/gpfs') and os.path.exists('/etc/SuSE-release'):
+-        return 'WCOSS_C'
+-    elif os.path.exists('/gpfs/dell2'):
+-        return 'WCOSS_DELL_P3'
+-    elif os.path.exists('/dev'):
+-        return 'LINUX'
+-    else:
+-        print 'workflow is currently only supported on: %s' % ' '.join(machines)
+-        raise NotImplementedError('Cannot auto-detect platform, ABORT!')
++    return 'LINUX'
+ 
+ def get_scheduler(machine):
+     try:
+@@ -198,6 +186,9 @@ def create_wf_task(task, cdump='gdas', cycledef=None, envar=None, dependency=Non
+                  'dependency': dependency, \
+                  'final': final}
+ 
++    if detectMachine() == 'LINUX':
++        task_dict['command']= '$GFS_DAEMON_RUN; $GFS_SING_CMD &JOBS_DIR;/%s.sh; EXCODE=$?; $GFS_DAEMON_KILL; exit $EXCODE;' % task
++
+     if task in ['getic','arch','earc'] and get_scheduler(detectMachine()) in ['slurm']:
+         task_dict['partition'] = '&PARTITION_%s_%s;' % (task.upper(),cdump.upper())
+ 
+@@ -300,7 +291,7 @@ def get_resources(machine, cfg, task, reservation, cdump='gdas'):
+     natstr = ''
+ 
+     if scheduler in ['slurm']:
+-        natstr = '--export=NONE'
++        natstr = '--export=ALL'
+ 
+     if machine in ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3', 'LINUX']:
+ 

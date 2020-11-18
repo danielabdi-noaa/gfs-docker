@@ -1,0 +1,76 @@
+diff --git sorc/build_wafs.sh sorc/build_wafs.sh
+index fc73303..ec671f1 100755
+--- sorc/build_wafs.sh
++++ sorc/build_wafs.sh
+@@ -10,7 +10,13 @@ module purge
+ set -x
+ mac=$(hostname | cut -c1-1)
+ mac2=$(hostname | cut -c1-2)
+-if [ $mac = f  ] ; then            # For Jet 
++if [ -d "/opt/global-workflow" ]; then  #container
++ if [ -d "/opt/intel" ]; then
++    machine=linux.intel
++ else
++    machine=linux.gnu
++ fi
++elif [ $mac = f  ] ; then            # For Jet 
+  machine=jet
+  . /etc/profile
+  . /etc/profile.d/modules.sh
+@@ -38,6 +44,22 @@ module list
+ 
+  curdir=`pwd`
+  export INC="${G2_INC4}"
++
++if [ "$machine" = "linux.gnu" ]; then
++ export FC=gfortran
++
++# track="-O3 -g -traceback -ftrapuv -check all -fp-stack-check "
++# track="-O2 -g -traceback"
++
++ export FFLAGSawc="-free -fdec-structure -I ${G2_INC4} -I ${IP_INC4} -O2 -fconvert=big-endian -g"
++ export FFLAGSblnd="-O -I ${G2_INC4} -g"
++ export FFLAGST="-O -free -I ${G2_INC4} -g"
++ export FFLAGSgcip="-free -fdec-structure -I ${G2_INC4} -I ${IP_INC4} -g -O3"
++# export FFLAGSgcip="-free -I ${G2_INC4} -I ${IP_INC4} ${track}"
++
++ export FFLAGScnv="-O3 -g -I ${G2_INC4}"
++ export FFLAGSmkwfs="-O3 -g -fdefault-real-8 -fdefault-integer-8"
++else
+  export FC=ifort
+ 
+ # track="-O3 -g -traceback -ftrapuv -check all -fp-stack-check "
+@@ -51,6 +73,7 @@ module list
+ 
+  export FFLAGScnv="-O3 -g -I ${G2_INC4}"
+  export FFLAGSmkwfs="-O3 -g -r8 -i8"
++fi
+ 
+ if [ ! -d "../exec" ] ; then
+   mkdir -p ../exec
+diff --git sorc/wafs_cnvgrib2.fd/makefile sorc/wafs_cnvgrib2.fd/makefile
+index 4f9d926..ae477a1 100755
+--- sorc/wafs_cnvgrib2.fd/makefile
++++ sorc/wafs_cnvgrib2.fd/makefile
+@@ -13,7 +13,7 @@ OBJS=	gds2gdt.o pds2pdt.o pds2pdtens.o wafs_cnvgrib2.o cnvwafs12.o cnvwafs22.o \
+ # CMD		Name of the executable
+ # PROFLIB	Library needed for profiling
+ #
+-FC =		ifort
++#FC =		ifort
+ 
+ #INC= /nwprod/lib/incmod/g2_4
+ 
+diff --git sorc/wafs_gcip.fd/gcip.f90 sorc/wafs_gcip.fd/gcip.f90
+index 01c3a3b..9af20e1 100644
+--- sorc/wafs_gcip.fd/gcip.f90
++++ sorc/wafs_gcip.fd/gcip.f90
+@@ -497,7 +497,7 @@ subroutine parse_args(iruntime, configFile, modelFile, satFiles, &
+   if(len_trim(runtime)  == 0 .or. len_trim(configFile) == 0 .or. &
+        len_trim(output_file) == 0) then
+      iret = -1
+-     call usage(runtime, configFile, output_file)
++     !call usage(runtime, configFile, output_file)
+   end if
+ 
+   iruntime(:) = 0

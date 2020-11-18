@@ -1,0 +1,13 @@
+diff --git build_g2tmpl.sh build_g2tmpl.sh
+index 4ca8c7e..38ca51b 100755
+--- build_g2tmpl.sh
++++ build_g2tmpl.sh
+@@ -54,7 +54,7 @@ set -x
+    g2tmplInfo=g2tmpl_info_and_log.txt
+    $debg && make debug FFLAGS="$FFLAGS" LIB=$g2tmplLib &> $g2tmplInfo \
+          || make build FFLAGS="$FFLAGS" LIB=$g2tmplLib &> $g2tmplInfo
+-   make message MSGSRC="$(gen_cfunction $g2tmplInfo OneLine LibInfo)" LIB=$g2tmplLib
++   #make message MSGSRC="$(gen_cfunction $g2tmplInfo OneLine LibInfo)" LIB=$g2tmplLib
+ 
+  $inst && {
+ #

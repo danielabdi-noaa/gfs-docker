@@ -1,0 +1,3 @@
+#!/bin/bash
+
+# Emulates slurm's sacct

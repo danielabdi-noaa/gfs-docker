@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Emulates slurm's squeue
+PIDS=`pidof -x timeout`
+if [ ! -z $PIDS ]; then
+   exec ps e --pid ${PIDS}
+fi

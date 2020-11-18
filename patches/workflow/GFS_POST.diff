@@ -1,0 +1,135 @@
+diff --git modulefiles/post/gfs_post.linux.gnu modulefiles/post/gfs_post.linux.gnu
+new file mode 100644
+index 0000000..4ab9290
+--- /dev/null
++++ modulefiles/post/gfs_post.linux.gnu
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for gfs_bufr on Linux with gcc/gfortran"
++
++export myFC=mpif90
++export OPENMP="-fopenmp"
++export myFCFLAGS="-O3 -ffree-form -fconvert=big-endian -g -fopenmp -cpp"
++export myCPP=/lib/cpp 
++export myCPPFLAGS="-P"
++export mySFC=gfortran
+diff --git modulefiles/post/gfs_post.linux.intel modulefiles/post/gfs_post.linux.intel
+new file mode 100644
+index 0000000..f4e0899
+--- /dev/null
++++ modulefiles/post/gfs_post.linux.intel
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++#%Module######################################################################
++##
++
++echo "Setting environment variables for gfs_bufr on Linux with intel"
++
++export myFC=mpiifort
++export OPENMP="-qopenmp"
++export myFCFLAGS="-O3 -free -convert big_endian -traceback -g -fp-model source -qopenmp -fpp"
++export myCPP=/lib/cpp 
++export myCPPFLAGS="-P"
++export mySFC=ifort
+diff --git sorc/build_ncep_post.sh sorc/build_ncep_post.sh
+index a0d7694..0e7ccc6 100755
+--- sorc/build_ncep_post.sh
++++ sorc/build_ncep_post.sh
+@@ -18,7 +18,15 @@ module purge
+ set -x
+ mac=$(hostname | cut -c1-1)
+ mac2=$(hostname | cut -c1-2)
+-if [ $mac2 = tf ] ; then                        # For Theia
++if [ -f ../modulefiles/post/gfs_post.linux.gnu ] ; then
++    if [ -d /opt/intel ]; then
++       . ../modulefiles/post/gfs_post.linux.intel
++       export target=linux.intel
++    else
++       . ../modulefiles/post/gfs_post.linux.gnu
++       export target=linux.gnu
++    fi
++elif [ $mac2 = tf ] ; then                        # For Theia
+  machine=theia
+  . /etc/profile
+  . /etc/profile.d/modules.sh
+diff --git sorc/ncep_post.fd/CALRAD_WCLOUD_newcrtm.f sorc/ncep_post.fd/CALRAD_WCLOUD_newcrtm.f
+index 0e24cdb..c6f76db 100644
+--- sorc/ncep_post.fd/CALRAD_WCLOUD_newcrtm.f
++++ sorc/ncep_post.fd/CALRAD_WCLOUD_newcrtm.f
+@@ -443,19 +443,24 @@ SUBROUTINE CALRAD_WCLOUD
+      endif
+      ! SSMIS, F16-F20 (183H,19H,19V,37H,37V,91H,91V)
+      if(iget(818)>0)then
+-     call select_channels_L(channelinfo(10),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),lvls(1:24,iget(818)),iget(818))
++     call select_channels_L(channelinfo(10),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),&
++          lvls(1:24,iget(818)),iget(818))
+      endif
+      if(iget(825)>0)then
+-     call select_channels_L(channelinfo(11),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),lvls(1:24,iget(825)),iget(825))
++     call select_channels_L(channelinfo(11),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),&
++          lvls(1:24,iget(825)),iget(825))
+      endif
+      if(iget(832)>0)then
+-     call select_channels_L(channelinfo(12),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),lvls(1:24,iget(832)),iget(832))
++     call select_channels_L(channelinfo(12),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),&
++          lvls(1:24,iget(832)),iget(832))
+      endif
+      if(iget(839)>0)then
+-     call select_channels_L(channelinfo(13),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),lvls(1:24,iget(839)),iget(839))
++     call select_channels_L(channelinfo(13),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),&
++          lvls(1:24,iget(839)),iget(839))
+      endif
+      if(iget(846)>0)then
+-     call select_channels_L(channelinfo(14),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),lvls(1:24,iget(846)),iget(846))
++     call select_channels_L(channelinfo(14),24,(/ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 /),&
++          lvls(1:24,iget(846)),iget(846))
+      endif
+      ! SEVIRI
+      if(iget(876)>0)then
+diff --git sorc/ncep_post.fd/makefile_module sorc/ncep_post.fd/makefile_module
+index 099f802..951c908 100755
+--- sorc/ncep_post.fd/makefile_module
++++ sorc/ncep_post.fd/makefile_module
+@@ -24,7 +24,11 @@ ARFLAGS       = ruv
+ FC = $(myFC) $(myFCFLAGS)
+ CPP = $(myCPP) $(myCPPFLAGS)
+ CPPFLAGS = -DLINUX 
+-FREE     = -FR
++ifeq ($(target),linux.gnu)
++FFR     = -ffree-form
++else
++FFR     = -FR
++endif
+ 
+ NETCDF_INC = -I$(NETCDF)/include
+ NETCDF_LDFLAGS = -L$(NETCDF)/lib -lnetcdff -lnetcdf
+@@ -97,6 +101,9 @@ OBJS =  wrf_io_flags.o getVariable.o getIVariableN.o \
+ 	gtg_ctlblk.o gtg_indices.o gtg_filter.o gtg_compute.o gtg_config.o map_routines.o gtg_algo.o gtg_smoothseams.o CALVESSEL.o \
+         CALHEL2.o CALCAPE2.o
+ 
++ifeq ($(target),linux.gnu)
++OBJS     += TIMEF.o
++endif
+ 
+ .SUFFIXES: .F .f .o .f90 .c
+ 
+diff --git ush/gfs_nceppost.sh ush/gfs_nceppost.sh
+index 7e8bc36..2119b20 100755
+--- ush/gfs_nceppost.sh
++++ ush/gfs_nceppost.sh
+@@ -345,7 +345,9 @@ export CTL=`basename $CTLFILE`
+ ln -sf griddef.out fort.110
+ cp ${PARMpost}/nam_micro_lookup.dat ./eta_micro_lookup.dat
+ 
+-${APRUN:-mpirun.lsf} $POSTGPEXEC < itag > outpost_gfs_${VDATE}_${CTL}
++#launch job
++source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++run_command ${APRUN:-mpirun.lsf} $POSTGPEXEC < itag > outpost_gfs_${VDATE}_${CTL}
+ 
+ export ERR=$?
+ export err=$ERR

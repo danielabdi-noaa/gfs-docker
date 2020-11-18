@@ -1,8 +1,8 @@
 diff --git modulefiles/chgres_cube.linux.gnu modulefiles/chgres_cube.linux.gnu
-index ba76044c..ba4f546f 100644
+index ba76044c..3b7e7767 100644
 --- modulefiles/chgres_cube.linux.gnu
 +++ modulefiles/chgres_cube.linux.gnu
-@@ -1,23 +1,3 @@
+@@ -1,22 +1,6 @@
 -#############################################################
 -## chgres_cube component - linux.gnu
 -#############################################################
@@ -22,19 +22,24 @@ index ba76044c..ba4f546f 100644
 -
 -export WGRIB2API_INC=${WGRIB2_DIR}/include
 -export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
--
++#!/bin/bash
++export WGRIB2API_INC="/usr/local/grib2/grib2/lib"
++export WGRIB2_LIB="/usr/local/grib2/grib2/lib/libwgrib2.a"
+ 
  export FCOMP=mpif90
  export FFLAGS="-O3 -g -fbacktrace -fdefault-real-8 -ffree-line-length-none -fopenmp -fconvert=big-endian"
- # for debugging
 diff --git modulefiles/chgres_cube.linux.intel modulefiles/chgres_cube.linux.intel
-index 9af64a3b..4eeb5224 100644
+index 9af64a3b..6ec9cd48 100644
 --- modulefiles/chgres_cube.linux.intel
 +++ modulefiles/chgres_cube.linux.intel
-@@ -1,23 +1,3 @@
+@@ -1,24 +1,8 @@
 -#############################################################
 -## chgres_cube component - linux.intel
 -#############################################################
--
++#!/bin/bash
++export WGRIB2API_INC="/usr/local/grib2/grib2/lib"
++export WGRIB2_LIB="/usr/local/grib2/grib2/lib/libwgrib2.a"
+ 
 -export IP_INCd=${NCEPLIBS}/ip/include_d
 -export NEMSIO_INC=${NCEPLIBS}/nemsio/include
 -export SFCIO_INC4=${NCEPLIBS}/sfcio/include_4
@@ -51,15 +56,11 @@ index 9af64a3b..4eeb5224 100644
 -export WGRIB2API_INC=${WGRIB2_DIR}/include
 -export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
 -
- export FCOMP=mpif90
+-export FCOMP=mpif90
++export FCOMP=mpiifort
  export FFLAGS="-O3 -fp-model source -g -traceback -r8 -i4 -qopenmp -convert big_endian -assume byterecl"
  # for debugging
-diff --git modulefiles/fv3gfs/fre-nctools.linux.gnu modulefiles/fv3gfs/fre-nctools.linux.gnu
-new file mode 100644
-index 00000000..e69de29b
-diff --git modulefiles/fv3gfs/fre-nctools.linux.intel modulefiles/fv3gfs/fre-nctools.linux.intel
-new file mode 100644
-index 00000000..e69de29b
+ #export FFLAGS="-O0 -g -traceback -r8 -i4 -qopenmp -convert big_endian -check bounds -warn unused -assume byterecl"
 diff --git modulefiles/fv3gfs/global_chgres.linux.gnu modulefiles/fv3gfs/global_chgres.linux.gnu
 new file mode 100644
 index 00000000..cfc2227e
@@ -277,7 +278,7 @@ index 00000000..f079e130
 +export FCOMP=mpiifort
 +export FFLAGS="-O3 -fp-model=precise -g -traceback -r8 -i4 -convert big_endian"
 diff --git sorc/build_all_ufs_utils.sh sorc/build_all_ufs_utils.sh
-index 3d190f90..d45699ce 100755
+index 3d190f90..b7f7a454 100755
 --- sorc/build_all_ufs_utils.sh
 +++ sorc/build_all_ufs_utils.sh
 @@ -1,4 +1,4 @@
@@ -286,24 +287,6 @@ index 3d190f90..d45699ce 100755
  set -eu
  #------------------------------------
  # USER DEFINED STUFF:
-@@ -53,7 +53,7 @@ echo " .... Building chgres .... "
- #------------------------------------
- $Build_chgres_cube && {
- echo " .... Building chgres_cube .... "
--./build_chgres_cube.sh > $logs_dir/build_chgres_cube.log 2>&1
-+#./build_chgres_cube.sh > $logs_dir/build_chgres_cube.log 2>&1
- }
- 
- #------------------------------------
-@@ -93,7 +93,7 @@ echo " .... Building emcsfc .... "
- #------------------------------------
- $Build_nctools && {
- echo " .... Building fre-nctools .... "
--./build_fre-nctools.sh > $logs_dir/build_fre-nctools.log 2>&1
-+#./build_fre-nctools.sh > $logs_dir/build_fre-nctools.log 2>&1
- }
- 
- #------------------------------------
 diff --git sorc/build_chgres.sh sorc/build_chgres.sh
 index 7dcb4291..a9e099a6 100755
 --- sorc/build_chgres.sh
@@ -383,7 +366,7 @@ index 3f2f1498..0ce28933 100755
  
  exit
 diff --git sorc/build_orog.sh sorc/build_orog.sh
-index c1cc33a8..23f56f7c 100755
+index ba0832ec..85623639 100755
 --- sorc/build_orog.sh
 +++ sorc/build_orog.sh
 @@ -1,4 +1,4 @@
@@ -392,12 +375,16 @@ index c1cc33a8..23f56f7c 100755
  #####################################################################################
  # orog using module compile standard
  # 10/10/2016 Fanglin.Yang@noaa.gov:    Create module load version
-@@ -43,20 +43,32 @@ elif [ $target = jet ]; then
+@@ -43,7 +43,7 @@ elif [ $target = jet ]; then
   INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
 -elif [ $target = hera ]; then
 +elif [ $target = hera -o "$target" = "linux.intel" ]; then
+  INCS="-I${NETCDF}/include"
+  export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
+  export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
+@@ -51,16 +51,28 @@ elif [ $target = orion ]; then
   INCS="-I${NETCDF}/include"
   export LIBSM="${BACIO_LIB4} ${W3NCO_LIBd} ${IP_LIBd} ${SP_LIBd} -L${NETCDF}/lib -lnetcdff -lnetcdf"
   export FFLAGSM="-O3 -g -traceback -r8  -convert big_endian -fp-model precise  -assume byterecl ${INCS}"
@@ -470,6 +457,688 @@ index 3bd29747..3d29e3c5 100644
  
   the_file = trim(fix_dir_target_grid) // trim(filename)
  
+diff --git sorc/fre-nctools.fd/tools/filter_topo/filter_topo.F90 sorc/fre-nctools.fd/tools/filter_topo/filter_topo.F90
+index 309eb9b3..ec19b7ca 100644
+--- sorc/fre-nctools.fd/tools/filter_topo/filter_topo.F90
++++ sorc/fre-nctools.fd/tools/filter_topo/filter_topo.F90
+@@ -57,7 +57,8 @@ program filter_topo
+ 
+   integer           :: is,ie,js,je,isd,ied,jsd,jed
+   integer,parameter :: ng = 3
+-  integer           :: nx, ny, npx, npy, nx_nest, ny_nest, npx_nest, npy_nest, is_nest, ie_nest, js_nest, je_nest, isd_nest, ied_nest, jsd_nest, jed_nest
++  integer           :: nx, ny, npx, npy, nx_nest, ny_nest, npx_nest, npy_nest, is_nest, ie_nest, &
++                       js_nest, je_nest, isd_nest, ied_nest, jsd_nest, jed_nest
+   !--- read namelist
+   call read_namelist()
+ 
+diff --git sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.gnu sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.gnu
+new file mode 100755
+index 00000000..15531609
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.gnu
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++gfortran -o filter_topo -I${NETCDF}/include -ffloat-store -g -O2 -fdefault-real-8 filter_topo.F90 -L${NETCDF}/lib -L${HDF5}/lib -lnetcdf -lnetcdff -lhdf5_hl -lhdf5
+diff --git sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.intel sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.intel
+new file mode 100755
+index 00000000..a67be3b2
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/filter_topo/make.csh_linux.intel
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++ifort -o filter_topo -I${NETCDF}/include -fltconsistency -fno-alias -stack_temps -safe_cray_ptr -ftz -assume byterecl -g -O2 -i4 -real_size 64 -traceback filter_topo.F90 -L${NETCDF}/lib -L${HDF5}/lib -lnetcdf -lnetcdff -lhdf5_hl -lhdf5
+diff --git sorc/fre-nctools.fd/tools/fregrid/env.linux.gnu sorc/fre-nctools.fd/tools/fregrid/env.linux.gnu
+new file mode 100644
+index 00000000..18e7cd7b
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/fregrid/env.linux.gnu
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpif90
++CC       := gcc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/fregrid/env.linux.intel sorc/fre-nctools.fd/tools/fregrid/env.linux.intel
+new file mode 100644
+index 00000000..a4ca56ba
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/fregrid/env.linux.intel
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpiicc
++CC       := icc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.gnu sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.gnu
+new file mode 100644
+index 00000000..4cb6e03b
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.gnu
+@@ -0,0 +1,90 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:32:02 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2010
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++# MPICC and CC are defined in env.$(SITE)
++include ./env.$(SITE)
++
++#MPICC    := mpicc
++#CC       := icc
++CFLAGS   := -O3 -g
++CFLAGS_O2:= -O2 -g
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -lm $(CLIBS2) $(STATIC)
++
++TARGETS  := fregrid fregrid_parallel
++
++SOURCES  := fregrid.c bilinear_interp.c conserve_interp.c fregrid_util.c
++SOURCES  += create_xgrid.c gradient_c2l.c interp.c read_mosaic.c
++SOURCES  += mpp_domain.c mpp_io.c tool_util.c affinity.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/gradient_c2l.h ../../shared/mosaic/interp.h  \
++          ../../shared/mosaic/mosaic_util.h  ../../shared/mosaic/read_mosaic.h 
++
++all: $(TARGETS)
++
++fregrid: $(OBJECTS) mosaic_util.o mpp.o
++	$(CC) -o $@ $^ $(CLIBS)
++
++fregrid_parallel: $(OBJECTS) mosaic_util_parallel.o mpp_parallel.o
++	$(MPICC) -o $@ $^ $(CLIBS)
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util_parallel.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++gradient_c2l.o: ../../shared/mosaic/gradient_c2l.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++affinity.o: ../shared/affinity.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_parallel.o: ../shared/mpp.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++conserve_interp.o: conserve_interp.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++bilinear_interp.o: bilinear_interp.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.intel sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.intel
+new file mode 100644
+index 00000000..2361c05f
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/fregrid/fre-nctools.mk_linux.intel
+@@ -0,0 +1,90 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:32:02 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2010
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++# MPICC and CC are defined in env.$(SITE)
++include ./env.$(SITE)
++
++#MPICC    := mpicc
++#CC       := icc
++CFLAGS   := -O3 -g
++CFLAGS_O2:= -O2 -g
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -limf $(CLIBS2) $(STATIC)
++
++TARGETS  := fregrid fregrid_parallel
++
++SOURCES  := fregrid.c bilinear_interp.c conserve_interp.c fregrid_util.c
++SOURCES  += create_xgrid.c gradient_c2l.c interp.c read_mosaic.c
++SOURCES  += mpp_domain.c mpp_io.c tool_util.c affinity.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/gradient_c2l.h ../../shared/mosaic/interp.h  \
++          ../../shared/mosaic/mosaic_util.h  ../../shared/mosaic/read_mosaic.h 
++
++all: $(TARGETS)
++
++fregrid: $(OBJECTS) mosaic_util.o mpp.o
++	$(CC) -o $@ $^ $(CLIBS)
++
++fregrid_parallel: $(OBJECTS) mosaic_util_parallel.o mpp_parallel.o
++	$(MPICC) -o $@ $^ $(CLIBS)
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util_parallel.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++gradient_c2l.o: ../../shared/mosaic/gradient_c2l.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++affinity.o: ../shared/affinity.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_parallel.o: ../shared/mpp.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++conserve_interp.o: conserve_interp.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++bilinear_interp.o: bilinear_interp.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/make_hgrid/env.linux.gnu sorc/fre-nctools.fd/tools/make_hgrid/env.linux.gnu
+new file mode 100644
+index 00000000..18e7cd7b
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_hgrid/env.linux.gnu
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpif90
++CC       := gcc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/make_hgrid/env.linux.intel sorc/fre-nctools.fd/tools/make_hgrid/env.linux.intel
+new file mode 100644
+index 00000000..a4ca56ba
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_hgrid/env.linux.intel
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpiicc
++CC       := icc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.gnu sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.gnu
+new file mode 100644
+index 00000000..59ca8e15
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.gnu
+@@ -0,0 +1,98 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:33:28 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2011
++# This program is distributed under the terms of the GNU General Public
++# License. See the file COPYING contained in this directory
++#
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++include env.$(SITE)
++
++#MPICC    := mpicc
++#CC       := icc
++CFLAGS   := -O3
++CFLAGS_O2:= -O2
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -lm $(CLIBS2) $(STATIC)
++
++TARGETS  := make_hgrid make_hgrid_parallel
++
++SOURCES  := make_hgrid.c create_conformal_cubic_grid.c create_gnomonic_cubic_grid.c create_grid_from_file.c create_lonlat_grid.c
++SOURCES  += mpp_domain.c mpp_io.c tool_util.c
++SOURCES  += read_mosaic.c create_xgrid.c interp.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/interp.h  ../../shared/mosaic/mosaic_util.h  \
++          ../../shared/mosaic/read_mosaic.h ./create_hgrid.h
++
++all: $(TARGETS)
++
++make_hgrid: $(OBJECTS) mosaic_util.o mpp.o
++	$(CC) -o $@ $^ $(CLIBS)
++
++make_hgrid_parallel: $(OBJECTS) mosaic_util_parallel.o mpp_parallel.o
++	$(MPICC) -o $@ $^ $(CLIBS)
++
++make_hgrid.o: make_hgrid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_gnomonic_cubic_grid.o: create_gnomonic_cubic_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_conformal_cubic_grid.o: create_conformal_cubic_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_lonlat_grid.o: create_lonlat_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_grid_from_file.o: create_grid_from_file.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util_parallel.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++read_mosaic_parallel.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(MPICC) -Duse_libMPI -Duse_netCDF $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_parallel.o: ../shared/mpp.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.intel sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.intel
+new file mode 100644
+index 00000000..2624c2e6
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_hgrid/fre-nctools.mk_linux.intel
+@@ -0,0 +1,98 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:33:28 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2011
++# This program is distributed under the terms of the GNU General Public
++# License. See the file COPYING contained in this directory
++#
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++include env.$(SITE)
++
++#MPICC    := mpicc
++#CC       := icc
++CFLAGS   := -O3
++CFLAGS_O2:= -O2
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -limf $(CLIBS2) $(STATIC)
++
++TARGETS  := make_hgrid make_hgrid_parallel
++
++SOURCES  := make_hgrid.c create_conformal_cubic_grid.c create_gnomonic_cubic_grid.c create_grid_from_file.c create_lonlat_grid.c
++SOURCES  += mpp_domain.c mpp_io.c tool_util.c
++SOURCES  += read_mosaic.c create_xgrid.c interp.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/interp.h  ../../shared/mosaic/mosaic_util.h  \
++          ../../shared/mosaic/read_mosaic.h ./create_hgrid.h
++
++all: $(TARGETS)
++
++make_hgrid: $(OBJECTS) mosaic_util.o mpp.o
++	$(CC) -o $@ $^ $(CLIBS)
++
++make_hgrid_parallel: $(OBJECTS) mosaic_util_parallel.o mpp_parallel.o
++	$(MPICC) -o $@ $^ $(CLIBS)
++
++make_hgrid.o: make_hgrid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_gnomonic_cubic_grid.o: create_gnomonic_cubic_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_conformal_cubic_grid.o: create_conformal_cubic_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_lonlat_grid.o: create_lonlat_grid.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++create_grid_from_file.o: create_grid_from_file.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util_parallel.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++read_mosaic_parallel.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(MPICC) -Duse_libMPI -Duse_netCDF $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_parallel.o: ../shared/mpp.c $(HEADERS)
++	$(MPICC) -Duse_libMPI $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.gnu sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.gnu
+new file mode 100644
+index 00000000..18e7cd7b
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.gnu
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpif90
++CC       := gcc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.intel sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.intel
+new file mode 100644
+index 00000000..a4ca56ba
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_solo_mosaic/env.linux.intel
+@@ -0,0 +1,4 @@
++# hera
++MPICC    := mpiicc
++CC       := icc
++STATIC   :=
+diff --git sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.gnu sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.gnu
+new file mode 100644
+index 00000000..0d085609
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.gnu
+@@ -0,0 +1,76 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:33:52 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2011
++# This program is distributed under the terms of the GNU General Public
++# License. See the file COPYING contained in this directory
++#
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++include env.$(SITE)
++
++#CC       := icc
++CFLAGS   := -O3
++CFLAGS_O2:= -O2
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -lm $(CLIBS2) $(STATIC)
++
++TARGETS  := make_solo_mosaic
++
++SOURCES  := make_solo_mosaic.c get_contact.c
++SOURCES  += mpp.c mpp_domain.c mpp_io.c tool_util.c
++SOURCES  += create_xgrid.c interp.c mosaic_util.c read_mosaic.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/interp.h  ../../shared/mosaic/mosaic_util.h  \
++          ./get_contact.h ../../shared/mosaic/read_mosaic.h
++
++all: $(TARGETS)
++
++make_solo_mosaic: $(OBJECTS)
++	$(CC) -o $@ $^ $(CLIBS)
++
++make_solo_mosaic.o: make_solo_mosaic.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++get_contact.o: get_contact.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.intel sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.intel
+new file mode 100644
+index 00000000..7a2130a2
+--- /dev/null
++++ sorc/fre-nctools.fd/tools/make_solo_mosaic/fre-nctools.mk_linux.intel
+@@ -0,0 +1,76 @@
++#
++# $Id: fre-nctools.mk,v 20.0 2013/12/14 00:33:52 fms Exp $
++# ------------------------------------------------------------------------------
++# FMS/FRE Project: Makefile to Build Regridding Executables
++# ------------------------------------------------------------------------------
++# afy    Ver   1.00  Initial version (Makefile, ver 17.0.4.2)       June 10
++# afy    Ver   1.01  Add rules to build MPI-based executable        June 10
++# afy    Ver   1.02  Simplified according to fre-nctools standards  June 10
++# ------------------------------------------------------------------------------
++# Copyright (C) NOAA Geophysical Fluid Dynamics Laboratory, 2009-2011
++# This program is distributed under the terms of the GNU General Public
++# License. See the file COPYING contained in this directory
++#
++# Designed and written by V. Balaji, Amy Langenhorst and Aleksey Yakovlev
++#
++include env.$(SITE)
++
++#CC       := icc
++CFLAGS   := -O3
++CFLAGS_O2:= -O2
++INCLUDES := -I${NETCDF_HOME}/include -I./ -I../shared -I../../shared/mosaic
++CLIBS     := -L${NETCDF_HOME}/lib -L${HDF5_HOME}/lib -lnetcdf -lhdf5_hl -lhdf5 -limf $(CLIBS2) $(STATIC)
++
++TARGETS  := make_solo_mosaic
++
++SOURCES  := make_solo_mosaic.c get_contact.c
++SOURCES  += mpp.c mpp_domain.c mpp_io.c tool_util.c
++SOURCES  += create_xgrid.c interp.c mosaic_util.c read_mosaic.c
++
++OBJECTS  := $(SOURCES:c=o)
++
++HEADERS = fre-nctools.mk ../shared/mpp.h  ../shared/mpp_domain.h  ../shared/mpp_io.h ../shared/tool_util.h   \
++          ../../shared/mosaic/constant.h ../../shared/mosaic/create_xgrid.h  \
++          ../../shared/mosaic/interp.h  ../../shared/mosaic/mosaic_util.h  \
++          ./get_contact.h ../../shared/mosaic/read_mosaic.h
++
++all: $(TARGETS)
++
++make_solo_mosaic: $(OBJECTS)
++	$(CC) -o $@ $^ $(CLIBS)
++
++make_solo_mosaic.o: make_solo_mosaic.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++get_contact.o: get_contact.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++mosaic_util.o: ../../shared/mosaic/mosaic_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -c $< 
++
++read_mosaic.o: ../../shared/mosaic/read_mosaic.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++interp.o: ../../shared/mosaic/interp.c $(HEADERS)
++	$(CC) -Duse_netCDF $(CFLAGS) $(INCLUDES) -c $< 
++
++mpp_io.o: ../shared/mpp_io.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp_domain.o: ../shared/mpp_domain.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++mpp.o: ../shared/mpp.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++tool_util.o: ../shared/tool_util.c $(HEADERS)
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $< 
++
++create_xgrid.o: ../../shared/mosaic/create_xgrid.c $(HEADERS)
++	$(CC) $(CFLAGS_O2) $(INCLUDES) -c $< 
++
++%.o: %.c
++	$(CC) $(CFLAGS) $(INCLUDES) -c $<
++
++clean:
++	-rm -f *.o $(TARGETS)
+diff --git sorc/fre-nctools.fd/tools/shave.fd/build_shave sorc/fre-nctools.fd/tools/shave.fd/build_shave
+index 28b8bae8..10c8995d 100755
+--- sorc/fre-nctools.fd/tools/shave.fd/build_shave
++++ sorc/fre-nctools.fd/tools/shave.fd/build_shave
+@@ -21,6 +21,12 @@ case $1 in
+   "orion" )
+      FCMP=ifort
+      FFLAGS="-O3 -fp-model precise -I$NETCDF/include -L$NETCDF/lib -lnetcdff -lnetcdf" ;;
++  "linux.intel" )
++     FCMP=ifort
++     FFLAGS="-O3 -fp-model precise -I$NETCDF/include -L$NETCDF/lib -lnetcdff -lnetcdf" ;;
++  "linux.gnu" )
++     FCMP=gfortran
++     FFLAGS="-O3 -I$NETCDF/include -L$NETCDF/lib -lnetcdff -lnetcdf" ;;
+   *)
+      echo "SHAVE UTILITY BUILD NOT TESTED ON MACHINE $1"
+      exit 1 ;;
+@@ -28,7 +34,7 @@ esac
+ 
+ EXEC=../../../../exec/shave.x
+ rm -f $EXEC
+-$FCMP $FFLAGS -o $EXEC shave_nc.F90
++$FCMP shave_nc.F90 $FFLAGS -o $EXEC
+ rc=$?
+ 
+ if ((rc != 0)); then
 diff --git sorc/global_chgres.fd/Makefile sorc/global_chgres.fd/Makefile
 index 3d002448..b50e76cb 100755
 --- sorc/global_chgres.fd/Makefile
@@ -534,37 +1203,35 @@ index 00000000..5aaeba50
 +make -f Makefile install
 +make -f Makefile clean
 diff --git sorc/link_fixdirs.sh sorc/link_fixdirs.sh
-index d5fbc1cd..f60dfba7 100755
+index a2face49..20709524 100755
 --- sorc/link_fixdirs.sh
 +++ sorc/link_fixdirs.sh
 @@ -19,7 +19,7 @@ if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
-     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet )'
+     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet | orion )'
      exit 1
  fi
--if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet ]; then
-+if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet -a $machine != linux.gnu -a $machine != linux.intel ]; then
+-if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet -a $machine != orion ]; then
++if [ $machine != cray -a $machine != hera -a $machine != dell -a $machine != jet -a $machine != orion -a $machine != "linux.gnu" -a $machine != "linux.intel" ]; then
      set +x
      echo '***ERROR*** unsupported machine'
-     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet )'
+     echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | hera | jet | orion )'
 @@ -43,6 +43,8 @@ elif [ $machine = "hera" ]; then
-     FIX_DIR="/scratch1/NCEPDEV/global/glopara/fix"
+     FIX_DIR="/scratch1/NCEPDEV/global/glopara/fix_nco_gfsv16"
  elif [ $machine = "jet" ]; then
-     FIX_DIR="/lfs3/projects/hfv3gfs/glopara/git/fv3gfs/fix"
+     FIX_DIR="/lfs4/HFIP/hfv3gfs/glopara/git/fv3gfs/fix_nco_gfsv16"
 +elif [ $machine = "linux.gnu" ] || [ $machine = "linux.intel" ]; then
 +    FIX_DIR="/fix"
+ elif [ $machine = "orion" ]; then
+     FIX_DIR="/work/noaa/global/glopara/fix_nco_gfsv16"
  fi
- cd ${pwd}/../fix                ||exit 8
- for dir in fix_am fix_fv3 fix_orog fix_fv3_gmted2010 fix_sfc_climo; do
 diff --git sorc/machine-setup.sh sorc/machine-setup.sh
-index 48b2ee1b..379ef4e0 100644
+index e4bbfda6..eb961b91 100644
 --- sorc/machine-setup.sh
 +++ sorc/machine-setup.sh
-@@ -109,8 +109,14 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
-     fi
-     target=gaea
+@@ -114,6 +114,14 @@ elif [[ "$(hostname)" =~ "Orion" ]]; then
      module purge
--elif [[ "$(hostname)" =~ "odin" ]]; then
--    target="odin"
+ elif [[ "$(hostname)" =~ "odin" ]]; then
+     target="odin"
 +elif [[ -d /dev ]] ; then
 +    if [[ -d /opt/intel ]]; then
 +        target=linux.intel
@@ -577,7 +1244,7 @@ index 48b2ee1b..379ef4e0 100644
      echo WARNING: UNKNOWN PLATFORM 1>&2
  fi
 diff --git sorc/mkgfsnemsioctl.fd/makefile.linux.gnu sorc/mkgfsnemsioctl.fd/makefile.linux.gnu
-new file mode 100755
+new file mode 100644
 index 00000000..2b08fef3
 --- /dev/null
 +++ sorc/mkgfsnemsioctl.fd/makefile.linux.gnu
@@ -593,7 +1260,7 @@ index 00000000..2b08fef3
 +all: $(SRCS)
 +	$(FCMP) $(FOPTS) $(LOPTS) ${SRCS} -o $(EXEC) $(LIBS)
 diff --git sorc/nemsio_chgdate.fd/makefile.linux.gnu sorc/nemsio_chgdate.fd/makefile.linux.gnu
-new file mode 100755
+new file mode 100644
 index 00000000..234ec47a
 --- /dev/null
 +++ sorc/nemsio_chgdate.fd/makefile.linux.gnu
@@ -630,7 +1297,7 @@ index 23eaa728..5941712b 100644
  write(6,'(A,7(1X,I6))') 'NEW idate  = ', idate
  write(6,'(A,I4)') 'NEW nfhour = ', nfhour
 diff --git sorc/nemsio_get.fd/makefile.linux.gnu sorc/nemsio_get.fd/makefile.linux.gnu
-new file mode 100755
+new file mode 100644
 index 00000000..d2af75df
 --- /dev/null
 +++ sorc/nemsio_get.fd/makefile.linux.gnu
@@ -646,7 +1313,7 @@ index 00000000..d2af75df
 +$(OBJS): $(SRCS)
 +	$(FCMP)  $(FOPTS) $(LOPTS) $(SRCS) -o $(EXEC) $(LIBS)
 diff --git sorc/nemsio_read.fd/makefile.linux.gnu sorc/nemsio_read.fd/makefile.linux.gnu
-new file mode 100755
+new file mode 100644
 index 00000000..54989091
 --- /dev/null
 +++ sorc/nemsio_read.fd/makefile.linux.gnu
@@ -709,3 +1376,53 @@ index 46d85319..db21897d 100755
  
  interp.o:  source_grid.o model_grid.o utils.o interp.F90
  	$(FCOMP) $(FFLAGS) $(ESMF_F90COMPILEPATHS) -c interp.F90
+diff --git sorc/ufs_build.cfg sorc/ufs_build.cfg
+index 343ca4cb..253eaef2 100644
+--- sorc/ufs_build.cfg
++++ sorc/ufs_build.cfg
+@@ -1,15 +1,15 @@
+ #
+ # ***** configuration of fv3gfs build *****
+ 
+- Building NEMS_util (nems_util) ........................ no
++ Building NEMS_util (nems_util) ........................ yes
+  Building chgres (chgres) .............................. yes
+- Building chgres_cube (chgres_cube) .................... no
+- Building nst_tf_chg (nst_tf_chg) ...................... no
+- Building orog (orog) .................................. no
++ Building chgres_cube (chgres_cube) .................... yes
++ Building nst_tf_chg (nst_tf_chg) ...................... yes
++ Building orog (orog) .................................. yes
+  Building cycle (cycle) ................................ yes
+  Building emcsfc (emcsfc) .............................. yes
+- Building fre-nctools (nctools) ........................ no
+- Building sfc_climo_gen (sfc_climo_gen) ................ no
++ Building fre-nctools (nctools) ........................ yes
++ Building sfc_climo_gen (sfc_climo_gen) ................ yes
+  
+ # -- END --
+
+diff --git ush/global_chgres.sh ush/global_chgres.sh
+index d2770ede..3b8474b4 100755
+--- ush/global_chgres.sh
++++ ush/global_chgres.sh
+@@ -515,7 +515,9 @@ EOF
+ 
+ export OMP_NUM_THREADS=${OMP_NUM_THREADS_CH:-${CHGRESTHREAD:-1}}
+ 
+- eval $APRUNC $CHGRESEXEC <<EOF $REDOUT$PGMOUT $REDERR$PGMERR
++#launch job
++source ${HOMEgfs}/cloud/scripts/run_on_host.sh
++run_command "eval $APRUNC $CHGRESEXEC <<EOF $REDOUT$PGMOUT $REDERR$PGMERR
+   &NAMCHG  LEVS=$LEVS, LONB=$LONB, LATB=$LATB,
+            NTRAC=$NTRAC, IDVC=$IDVC, IDSL=$IDSL,
+            LSOIL=$LSOIL, IVSSFC=$IVSSFC, OUTTYP=$OUTTYP,
+@@ -523,7 +525,7 @@ export OMP_NUM_THREADS=${OMP_NUM_THREADS_CH:-${CHGRESTHREAD:-1}}
+            IVEGSRC=$IVEGSRC, TILE_NUM=$TILE_NUM, REGIONAL=$REGIONAL,
+            HALO=$HALO, NTILES=$ntiles, $CHGRESVARS
+  /
+-EOF
++EOF"
+ 
+ export ERR=$?
+ export err=$ERR

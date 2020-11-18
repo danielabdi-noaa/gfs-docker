@@ -1,20 +1,6 @@
-diff --git CMakeLists.txt CMakeLists.txt
-index bfeb9438b..2c48c40bb 100644
---- CMakeLists.txt
-+++ CMakeLists.txt
-@@ -268,7 +268,7 @@ project(GSI)
-     add_subdirectory(src/enkf)
-   endif(BUILD_ENKF) 
-   if(BUILD_UTIL)
--    add_subdirectory(util/EnKF/gfs/src)
-+    #add_subdirectory(util/EnKF/gfs/src)
-     add_subdirectory(util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_horiz.fd)
-     add_subdirectory(util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd)
-     add_subdirectory(util/Radiance_Monitor/nwprod/radmon_shared.v3.0.0/sorc/verf_radang.fd)
 diff --git modulefiles/modulefile.ProdGSI.linux modulefiles/modulefile.ProdGSI.linux
-new file mode 100644
-index 000000000..340be5d68
---- /dev/null
+index e69de29b..340be5d6 100644
+--- modulefiles/modulefile.ProdGSI.linux
 +++ modulefiles/modulefile.ProdGSI.linux
 @@ -0,0 +1,14 @@
 +#!/bin/bash
@@ -31,32 +17,21 @@ index 000000000..340be5d68
 +export CRTM_VER=2.3.0
 +export CRTM_INC=/opt/CRTM-${CRTM_VER}/crtm_v${CRTM_VER}/include
 +export CRTM_LIB=/opt/CRTM-${CRTM_VER}/crtm_v${CRTM_VER}/lib/libcrtm.a
-diff --git src/fv3gfs_ncio/CMakeLists.txt src/fv3gfs_ncio/CMakeLists.txt
-index 337a5378c..007b76ff0 100644
---- src/fv3gfs_ncio/CMakeLists.txt
-+++ src/fv3gfs_ncio/CMakeLists.txt
-@@ -3,6 +3,7 @@ if(BUILD_FV3GFS_NCIO)
-   set(Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
-   # NetCDF-4 library
-   include_directories( ${NETCDF_INCLUDES} ${FV3GFS_NCIO_INCS} )
-+  message(STATUS "The value of NETCDF_INCLUDES=${NETCDF_INCLUDES}")
-   FILE(GLOB FV3GFS_NCIO_SRC ${CMAKE_CURRENT_SOURCE_DIR}/module_fv3gfs_ncio.f90 )
-   set_source_files_properties( ${FV3GFS_NCIO_SRC} PROPERTIES COMPILE_FLAGS ${FV3GFS_NCIO_Fortran_FLAGS} )
-   add_library(fv3gfs_ncio STATIC ${FV3GFS_NCIO_SRC})
-diff --git src/ncdiag/CMakeLists.txt src/ncdiag/CMakeLists.txt
-index 154a098ed..0f0a412be 100644
---- src/ncdiag/CMakeLists.txt
-+++ src/ncdiag/CMakeLists.txt
-@@ -8,6 +8,7 @@ if(BUILD_NCDIAG)
-   # NetCDF-4 library
-   include_directories( ${NETCDF_INCLUDES} ${NCDIAG_INCS} )
- 
-+  message( STATUS "NETCDF_LIBRARIES=${NETCDF_LIBRARIES} NETCDF_INCLUDES=${NETCDF_INCLUDES}")
-   # 32-bit reals, for now
-   add_definitions(-D_REAL4_ -DUSE_MPI)
-   FILE(GLOB NCDIAG_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*90 )
+diff --git src/gsi/phil2.f90 src/gsi/phil2.f90
+index e17c43f1..4f503bd3 100644
+--- src/gsi/phil2.f90
++++ src/gsi/phil2.f90
+@@ -299,7 +299,7 @@ integer(i_kind),parameter         :: ngen=14
+ real(dp),       dimension(3,nob)  :: xob
+ real(dp),       dimension(nob)    :: rob,sob,latobc
+ real(dp),       dimension(0:3)    :: qset
+-real(dp),       dimension(0:3,3)  :: qset3
++real(dp),       dimension(0:3,5)  :: qset3
+ real(dp),       dimension(0:3,5)  :: qset5
+ real(dp),       dimension(0:3,7)  :: qset7
+ real(dp),       dimension(0:3,13) :: qset13
 diff --git ush/build_all_cmake.sh ush/build_all_cmake.sh
-index ceaf91d9c..9931ac12a 100755
+index ceaf91d9..9931ac12 100755
 --- ush/build_all_cmake.sh
 +++ ush/build_all_cmake.sh
 @@ -1,4 +1,4 @@
@@ -74,98 +49,223 @@ index ceaf91d9c..9931ac12a 100755
  else
      echo "unknown target = $target"
      exit 9
-diff --git util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_horiz.fd/read_diag.f90 util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_horiz.fd/read_diag.f90
-index 7e592d3a5..774d0a05e 100644
---- util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_horiz.fd/read_diag.f90
-+++ util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_horiz.fd/read_diag.f90
-@@ -649,7 +649,7 @@ module read_diag
+diff --git util/EnKF/gfs/src/calc_increment_ens.fd/fv3_interface.f90 util/EnKF/gfs/src/calc_increment_ens.fd/fv3_interface.f90
+index 9f602b02..61cbd827 100644
+--- util/EnKF/gfs/src/calc_increment_ens.fd/fv3_interface.f90
++++ util/EnKF/gfs/src/calc_increment_ens.fd/fv3_interface.f90
+@@ -33,8 +33,8 @@ module fv3_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants, my_r_kind=>r_kind
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -46,6 +46,7 @@ module fv3_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_ens.fd/gfs_nems_interface.f90 util/EnKF/gfs/src/calc_increment_ens.fd/gfs_nems_interface.f90
+index 858577bc..009bf419 100644
+--- util/EnKF/gfs/src/calc_increment_ens.fd/gfs_nems_interface.f90
++++ util/EnKF/gfs/src/calc_increment_ens.fd/gfs_nems_interface.f90
+@@ -33,8 +33,8 @@ module gfs_nems_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants, my_r_kind=>r_kind
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -44,6 +44,7 @@ module gfs_nems_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_ens_ncio.fd/fv3_interface.f90 util/EnKF/gfs/src/calc_increment_ens_ncio.fd/fv3_interface.f90
+index 2eb31b83..a7068fe5 100644
+--- util/EnKF/gfs/src/calc_increment_ens_ncio.fd/fv3_interface.f90
++++ util/EnKF/gfs/src/calc_increment_ens_ncio.fd/fv3_interface.f90
+@@ -33,8 +33,8 @@ module fv3_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants, my_r_kind=>r_kind
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -45,6 +45,7 @@ module fv3_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private  :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_ens_ncio.fd/gfs_ncio_interface.f90 util/EnKF/gfs/src/calc_increment_ens_ncio.fd/gfs_ncio_interface.f90
+index 4d3d0723..46b7f232 100644
+--- util/EnKF/gfs/src/calc_increment_ens_ncio.fd/gfs_ncio_interface.f90
++++ util/EnKF/gfs/src/calc_increment_ens_ncio.fd/gfs_ncio_interface.f90
+@@ -33,8 +33,8 @@ module gfs_ncio_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants, only:init_constants_derived
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -44,6 +44,7 @@ module gfs_ncio_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private  :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_serial.fd/CMakeLists.txt util/EnKF/gfs/src/calc_increment_serial.fd/CMakeLists.txt
+index 4957f805..037dd9a7 100644
+--- util/EnKF/gfs/src/calc_increment_serial.fd/CMakeLists.txt
++++ util/EnKF/gfs/src/calc_increment_serial.fd/CMakeLists.txt
+@@ -1,13 +1,13 @@
+ cmake_minimum_required(VERSION 2.6)
+ if(BUILD_UTIL)
+-  file(GLOB LOCAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.f90)
+-  list( REMOVE_ITEM LOCAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.f90 )
++  #file(GLOB LOCAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.f90)
++  #list( REMOVE_ITEM LOCAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.f90 )
+ 
+-  set_source_files_properties( ${LOCAL_SRC} PROPERTIES COMPILE_FLAGS ${GSI_Fortran_FLAGS} )
+-  add_executable(calc_increment_serial.x  ${LOCAL_SRC} )
+-  set_target_properties( calc_increment_serial.x PROPERTIES COMPILE_FLAGS ${UTIL_Fortran_FLAGS} )
+-  SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_Fortran_FLAGS}" )
+-  include_directories( ${UTIL_INC} ${CORE_INCS} ${NETCDF_INCLUDES} ) 
+-  target_link_libraries( calc_increment_serial.x ${CORE_LIBRARIES} ${NETCDF_LIBRARIES_F90} ${NETCDF_LIBRARIES} ${MPI_Fortran_LIBRARIES} ${HDF5_HL_LIBRARIES} ${HDF5_LIBRARIES} )
+-  add_dependencies( calc_increment_serial.x enkfdeplib enkflib )
++  #set_source_files_properties( ${LOCAL_SRC} PROPERTIES COMPILE_FLAGS ${GSI_Fortran_FLAGS} )
++  #add_executable(calc_increment_serial.x  ${LOCAL_SRC} )
++  #set_target_properties( calc_increment_serial.x PROPERTIES COMPILE_FLAGS ${UTIL_Fortran_FLAGS} )
++  #SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_Fortran_FLAGS}" )
++  #include_directories( ${UTIL_INC} ${CORE_INCS} ${NETCDF_INCLUDES} ) 
++  #target_link_libraries( calc_increment_serial.x ${CORE_LIBRARIES} ${NETCDF_LIBRARIES_F90} ${NETCDF_LIBRARIES} ${MPI_Fortran_LIBRARIES} ${HDF5_HL_LIBRARIES} ${HDF5_LIBRARIES} )
++  #add_dependencies( calc_increment_serial.x enkfdeplib enkflib )
+ endif()
+diff --git util/EnKF/gfs/src/calc_increment_serial.fd/fv3_interface.f90 util/EnKF/gfs/src/calc_increment_serial.fd/fv3_interface.f90
+index 337d8035..43a33525 100644
+--- util/EnKF/gfs/src/calc_increment_serial.fd/fv3_interface.f90
++++ util/EnKF/gfs/src/calc_increment_serial.fd/fv3_interface.f90
+@@ -33,8 +33,8 @@ module fv3_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants, my_r_kind=>r_kind
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -46,6 +46,7 @@ module fv3_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_serial.fd/gfs_nems_interface.f90 util/EnKF/gfs/src/calc_increment_serial.fd/gfs_nems_interface.f90
+index f3664ad5..277b6898 100644
+--- util/EnKF/gfs/src/calc_increment_serial.fd/gfs_nems_interface.f90
++++ util/EnKF/gfs/src/calc_increment_serial.fd/gfs_nems_interface.f90
+@@ -33,8 +33,8 @@ module gfs_nems_interface
+ 
+   !-----------------------------------------------------------------------
+ 
+-  use constants
+-  use kinds
++  use constants!, my_r_kind=>r_kind
++  !use kinds
+ 
+   !-----------------------------------------------------------------------
+ 
+@@ -44,6 +44,7 @@ module gfs_nems_interface
+   !-----------------------------------------------------------------------
+ 
+   implicit none
++  integer, parameter, private :: r_kind = selected_real_kind(6)
+ 
+   !-----------------------------------------------------------------------
+ 
+diff --git util/EnKF/gfs/src/calc_increment_serial.fd/namelist_def.f90 util/EnKF/gfs/src/calc_increment_serial.fd/namelist_def.f90
+index 0179faa7..5a49308d 100644
+--- util/EnKF/gfs/src/calc_increment_serial.fd/namelist_def.f90
++++ util/EnKF/gfs/src/calc_increment_serial.fd/namelist_def.f90
+@@ -1,6 +1,6 @@
+ module namelist_def
+ 
+-  use kinds
++  !use kinds
+ 
+   implicit none
    
-     nlevs = header_fix%nlevs 
- 
--    if( ncdiag_open_status(cur_idx)%nc_read == .true. ) then 
-+    if( ncdiag_open_status(cur_idx)%nc_read .eqv. .true. ) then 
-        iflag = -1  
-     else  
-        iflag = 0
-@@ -663,7 +663,8 @@ module read_diag
-           ntobs = nrecords
-        end if
- 
--       write(6,*) 'header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs = ', header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs
-+       write(6,*) 'header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs = ', &
-+               header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs
- 
-        !------------------------------------
-        !  allocate the returned structures
-@@ -954,7 +955,7 @@ module read_diag
-         end if 
-      end do 
- 
--     if( verify_var_name_nc == .false. ) then
-+     if( verify_var_name_nc .eqv. .false. ) then
-         do k=1,num_vars
-            if( test_name == var_names(k) ) then
-               verify_var_name_nc = .true.
-diff --git util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/read_diag.f90 util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/read_diag.f90
-index 7e592d3a5..774d0a05e 100644
---- util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/read_diag.f90
-+++ util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/read_diag.f90
-@@ -649,7 +649,7 @@ module read_diag
-   
-     nlevs = header_fix%nlevs 
- 
--    if( ncdiag_open_status(cur_idx)%nc_read == .true. ) then 
-+    if( ncdiag_open_status(cur_idx)%nc_read .eqv. .true. ) then 
-        iflag = -1  
-     else  
-        iflag = 0
-@@ -663,7 +663,8 @@ module read_diag
-           ntobs = nrecords
-        end if
- 
--       write(6,*) 'header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs = ', header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs
-+       write(6,*) 'header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs = ', &
-+               header_fix%nlevs, ncdiag_open_status(id)%num_records, ntobs
- 
-        !------------------------------------
-        !  allocate the returned structures
-@@ -954,7 +955,7 @@ module read_diag
-         end if 
-      end do 
- 
--     if( verify_var_name_nc == .false. ) then
-+     if( verify_var_name_nc .eqv. .false. ) then
-         do k=1,num_vars
-            if( test_name == var_names(k) ) then
-               verify_var_name_nc = .true.
-diff --git util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/time.f90 util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/time.f90
-index d6402196a..8ee11d325 100755
---- util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/time.f90
-+++ util/Ozone_Monitor/nwprod/oznmon_shared.v2.0.0/sorc/oznmon_time.fd/time.f90
-@@ -330,7 +330,7 @@ program main
-    end do
- 
- !  Do validation
--   if( validate == .TRUE. ) then
-+   if( validate .eqv. .TRUE. ) then
-       call load_base( satname, ier )
- 
-       write(6,*) 'ier from load_base = ', ier
-@@ -345,7 +345,7 @@ program main
-    do j=1,n_levs
-       if ( use(j,k) > 0.0 ) then
- 
--         if( validate == .TRUE. .AND. ier >= 0 ) then
-+         if( validate .eqv. .TRUE. .AND. ier >= 0 ) then
- 
-             pbound = 0.00
-             call validate_penalty( j, k, penalty(j,k), valid_penalty, pbound, iret )
-@@ -370,7 +370,7 @@ program main
-       endif
-    end do
- 
--   if( validate == .TRUE. ) then
-+   if( validate .eqv. .TRUE. ) then
-       close( lupen )
-       close( lucnt )
-    endif
+diff --git util/EnKF/gfs/src/getsigensmeanp_smooth.fd/getsigensmeanp_smooth_ncep.f90 util/EnKF/gfs/src/getsigensmeanp_smooth.fd/getsigensmeanp_smooth_ncep.f90
+index cb622350..fa180c58 100644
+--- util/EnKF/gfs/src/getsigensmeanp_smooth.fd/getsigensmeanp_smooth_ncep.f90
++++ util/EnKF/gfs/src/getsigensmeanp_smooth.fd/getsigensmeanp_smooth_ncep.f90
+@@ -99,7 +99,7 @@ program getsigensmeanp_smooth
+   filenameout = trim(adjustl(datapath)) // trim(adjustl(filenameout))
+   ! if a 5th arg present, it's a filename to write out ensemble spread
+   ! (only used for ncio)
+-  if (nargs() > 5) then
++  if (nargs() > 5) then
+      call getarg(5,filenameoutsprd)
+      write_spread_ncio = .true.
+      if (mype == 0) print *,'computing ensemble spread'
+@@ -392,7 +392,8 @@ program getsigensmeanp_smooth
+                      values_2d_tmp = values_2d_tmp**2
+                      call mpi_reduce(values_2d_tmp,values_2d_sprd,lonb*latb,mpi_real4,mpi_sum,0,new_comm,iret)
+                      values_2d_sprd= sqrt(values_2d_sprd*rnanalsm1)
+-                     if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',minval(values_2d_sprd),maxval(values_2d_sprd)
++                     if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',&
++                             minval(values_2d_sprd),maxval(values_2d_sprd)
+                   endif
+                   if (has_attr(dset, 'nbits', trim(dset%variables(nvar)%name))) then
+                       call read_attribute(dset, 'nbits', nbits, &
+@@ -458,7 +459,8 @@ program getsigensmeanp_smooth
+                      values_3d_tmp = values_3d_tmp**2
+                      call mpi_reduce(values_3d_tmp,values_3d_sprd,lonb*latb*nlevs,mpi_real4,mpi_sum,0,new_comm,iret)
+                      values_3d_sprd= sqrt(values_3d_sprd*rnanalsm1)
+-                     if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',minval(values_3d_sprd),maxval(values_3d_sprd)
++                     if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',&
++                             minval(values_3d_sprd),maxval(values_3d_sprd)
+                   endif
+                   if (has_attr(dset, 'nbits', trim(dset%variables(nvar)%name))) then
+                       call read_attribute(dset, 'nbits', nbits, &
+@@ -638,7 +640,8 @@ program getsigensmeanp_smooth
+                  values_3d_tmp = values_3d_tmp**2
+                  call mpi_reduce(values_3d_tmp,values_3d_sprd,lonb*latb*nlevs,mpi_real4,mpi_sum,0,new_comm,iret)
+                  values_3d_sprd= sqrt(values_3d_sprd*rnanalsm1)
+-                 if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',minval(values_3d_sprd),maxval(values_3d_sprd)
++                 if (mype == 0) print *,trim(dset%variables(nvar)%name),' min/max spread',&
++                         minval(values_3d_sprd),maxval(values_3d_sprd)
+               endif
+               if (mype == 0) then
+                  call write_vardata(dseto,trim(dset%variables(nvar)%name),values_3d_avg)

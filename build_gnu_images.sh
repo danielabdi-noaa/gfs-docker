@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker)" ]; then
   exit 1
 fi
 
-REPO=${REPO:-dshawul}
+REPO=${REPO:-noaagsl}
 GERRIT_ID=${GERRIT_ID:-gerrit}
 SSH_CONFIG=${SSH_CONFIG:-${HOME}/.ssh/config}
 

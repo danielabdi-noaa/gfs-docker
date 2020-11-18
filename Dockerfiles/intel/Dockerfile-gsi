@@ -13,6 +13,6 @@ RUN dnf update -y && \
         blas-devel \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/exec
-COPY --from=0 /etc/bashrc /etc/bashrc
-COPY --from=0 /opt/global-workflow/sorc/gsi.fd/exec /opt/exec
+ARG EXECP=/opt/global-workflow/exec
+RUN mkdir -p $EXECP
+COPY --from=0 /opt/global-workflow/sorc/gsi.fd/exec $EXECP

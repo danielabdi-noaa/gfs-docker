@@ -3,10 +3,10 @@ FROM ${REPO}/esmf-intel:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 RUN dnf update -y && \
+    dnf --enablerepo=PowerTools install -y lapack-devel && \
     dnf install -y --enablerepo=PowerTools \
         redhat-lsb-core \
         curl-devel \
-        lapack-devel \
         blas-devel \
         libpng-devel \
         bzip2-devel \
@@ -23,12 +23,21 @@ RUN dnf update -y && \
         cairo-devel \
         pixman-devel \
         xorg-x11-xbitmaps  \
+        libaec-devel \
+        zlib-devel \
+        boost-devel \
+        curl \
+        zip \
+        unzip \
+        bzip2 \
         file \
         flex  \
         byacc  \
         python3-devel \
     && rm -rf /var/lib/apt/lists/*
 
+COPY scripts/build_crtm_gempak.sh /opt
+
 COPY scripts/checkout_nceplibs.sh /opt
 COPY scripts/build_nceplibs.sh /opt
-COPY patches /opt/patches
+COPY patches/nceplibs /opt/patches/nceplibs

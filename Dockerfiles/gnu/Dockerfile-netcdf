@@ -31,5 +31,5 @@ RUN  cd /opt && ./build_mpi.sh && COMP=gnu ./build_netcdf.sh
 
 COPY setup.linux.gnu /opt
 
-ARG PP=/etc/bashrc
-RUN echo ". /opt/setup.linux.gnu" >> $PP
+ARG PP=/etc/bash.bashrc
+RUN sed -i "1i source /opt/setup.linux.gnu" $PP

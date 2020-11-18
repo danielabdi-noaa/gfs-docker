@@ -13,5 +13,10 @@ cp /opt/intel/lib/intel64/libintlc.so.5 /opt/lib
 cp /opt/intel/lib/intel64/libifport.so.5 /opt/lib
 cp /opt/intel/lib/intel64/libifcoremt.so.5 /opt/lib
 
+cp /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin/libmkl_intel_lp64.so /opt/lib
+cp /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin/libmkl_intel_thread.so /opt/lib
+cp /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin/libmkl_core.so /opt/lib
+cp /opt/intel/compilers_and_libraries_2020.0.166/linux/compiler/lib/intel64_lin/libcilkrts.so.5 /opt/lib
+
 cp -r /opt/intel/compilers_and_libraries_2020.0.166/linux/mpi/intel64/bin /opt
 

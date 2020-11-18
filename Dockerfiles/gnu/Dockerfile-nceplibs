@@ -20,15 +20,26 @@ RUN apt-get update -y && \
         libcairo2-dev \
         libpixman-1-dev \
         xbitmaps  \
+        libaec-dev \
+        zlib1g-dev \
+        libboost-dev \
+        curl \
+        zip \
+        unzip \
+        bzip2 \
         file \
         flex  \
         byacc  \
         python-dev \
     && rm -rf /var/lib/apt/lists/*
 
+COPY patches/nceplibs/crtm.diff /opt/patches/nceplibs/crtm.diff
+COPY scripts/build_crtm_gempak.sh /opt
+RUN cd /opt && ./build_crtm_gempak.sh
+
 COPY scripts/checkout_nceplibs.sh /opt
 COPY scripts/build_nceplibs.sh /opt
-COPY patches /opt/patches
+COPY patches/nceplibs /opt/patches/nceplibs
 
 RUN cd /opt && ./checkout_nceplibs.sh
 RUN cd /opt && ./build_nceplibs.sh

@@ -9,6 +9,7 @@ MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
 COPY scripts/copy_deps.sh /opt
 
-RUN mkdir -p /opt/exec
+ARG EXECP=/opt/global-workflow/exec
+RUN mkdir -p $EXECP
 COPY --from=0 /usr/local/NCEPlibs-20190820 /usr/local/NCEPlibs-20190820
-COPY --from=0 /opt/global-workflow/sorc/fv3gfs.fd/NEMS/exe/global_fv3gfs.x /opt/exec/global_fv3gfs.x
+COPY --from=0 /opt/global-workflow/sorc/fv3gfs.fd/NEMS/exe/global_fv3gfs.x $EXECP/global_fv3gfs.x

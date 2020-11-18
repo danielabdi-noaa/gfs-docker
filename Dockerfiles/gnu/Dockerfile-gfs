@@ -3,39 +3,46 @@ ARG REPO
 FROM ${REPO}/nceplibs-gnu:latest
 MAINTAINER Daniel Abdi <daniel.abdi@noaa.gov>
 
-# scripts
-COPY ./patch_gfs.sh /opt/patch_gfs.sh
-COPY ./patch_fv3.sh /opt/patch_fv3.sh
-COPY ./scripts/checkout_gfs.sh /opt/checkout_gfs.sh
-COPY ./scripts/build_gfs.sh /opt/build_gfs.sh
-
 # download ncl
 ARG PP=ncl_ncarg-6.6.2-Debian9.8_64bit_gnu630.tar.gz
 RUN cd /opt && wget https://www.earthsystemgrid.org/dataset/ncl.662.dap/file/$PP && \
     mkdir -p ncl && tar -xvf $PP -C ncl && rm -rf $PP
 
+# Paths
+RUN ln -sf /bin/echo /usr/bin/module && \
+    ln -sf /bin/bash /bin/sh
+
+# Rocoto
+RUN apt-get -y update && \
+    apt-get -y install ruby-dev python-pip bc && \
+    pip install numpy && \
+    cd /opt && git clone https://github.com/christopherwharrop/rocoto.git && \
+    cd rocoto && bash ./INSTALL
+
 # get ssh pub key for vlab host (note: gerrit port is 29418 )
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan  -p 29418 -t rsa vlab.ncep.noaa.gov >> ~/.ssh/known_hosts
 
-# mount ssh and secret ssh config file
+# clone gfs by mounting ssh and secret ssh config file
 ARG GERRIT_ID
+COPY ./scripts/checkout_gfs.sh /opt/checkout_gfs.sh
 RUN --mount=type=ssh,id=default \
     --mount=type=secret,id=gerrit,dst=/root/.ssh/config \
     cat /root/.ssh/config \
     && ssh-add -L \
     && cd /opt && ./checkout_gfs.sh
 
-# clone and build gfs
+# scripts
+COPY ./patch_gfs.sh /opt/patch_gfs.sh
+COPY ./patch_fv3.sh /opt/patch_fv3.sh
+COPY ./scripts/build_gfs.sh /opt/build_gfs.sh
+COPY ./scripts/run_bash_command /usr/bin
+COPY ./patches /opt/patches
+
+# build gfs
 RUN cd /opt && ./patch_gfs.sh && \
     cd global-workflow/sorc && bash ./build_all.sh && bash ./link_fv3gfs.sh emc linux.gnu
 
-## Rocoto
-#RUN apt-get -y update && \
-#    apt-get -y install ruby-dev python-pip bc && \
-#    pip install numpy && \
-#    cd /opt && git clone https://github.com/christopherwharrop/rocoto.git && \ 
-#    cd rocoto && ./INSTALL
-
 # .bashrc
 ARG PP=/etc/bash.bashrc
-RUN echo "GFS_LIBS_DIR=/opt && COMP=gnu source /opt/global-workflow/modulefiles/setup.linux" >> $PP
+RUN sed -i '1i GFS_LIBS_DIR=/opt && COMP=gnu source /opt/global-workflow/modulefiles/setup.linux' $PP && \
+    /opt/global-workflow/cloud/scripts/link_slurm.sh

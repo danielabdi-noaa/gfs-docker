@@ -2,6 +2,24 @@
 
 set -ex
 
+#grib_util
+git clone https://github.com/NOAA-EMC/NCEPLIBS-grib_util.git
+cd NCEPLIBS-grib_util
+git checkout grib_util_v1.1.1 -b temp
+patch -p0 -i ../patches/nceplibs/grib_util.diff 
+cd -
+
+#g2tmpl
+git clone https://github.com/NOAA-EMC/NCEPLIBS-g2tmpl.git
+cd NCEPLIBS-g2tmpl
+git checkout g2tmpl_v1.6.0 -b temp
+patch -p0 -i ../patches/nceplibs/g2tmpl.diff 
+cd -
+
+#gfsio
+git clone https://github.com/NOAA-EMC/NCEPLIBS-gfsio.git
+cd NCEPLIBS-gfsio; git checkout 6cdaff1c441f58d2a8b5c9 -b temp; cd -
+
 #bacio
 git clone https://github.com/NOAA-EMC/NCEPLIBS-bacio.git
 cd NCEPLIBS-bacio; git checkout 13cff73cf82aa45bbb8158 -b temp; cd -
@@ -81,15 +99,3 @@ git checkout de699056db15a49e39bc82fd -b temp
 patch -p0 -i ../patches/nceplibs/prod_util.diff 
 cd -
 
-#CRTM
-git clone https://github.com/NOAA-EMC/JCSDA_CRTM.git
-cd JCSDA_CRTM; git checkout release/REL-2.3.0; cd -
-mv JCSDA_CRTM CRTM-2.3.0
-
-#VER=2.3.0
-#PP=crtm_v${VER}.tar.gz
-#LNK="https://ftp.emc.ncep.noaa.gov/jcsda/CRTM/REL-${VER}/crtm_v${VER}.tar.gz"
-#wget ${LNK}
-#tar -xvf ${PP}
-#mv REL-${VER} CRTM-${VER}
-#rm -rf ${PP}

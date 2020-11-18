@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Emulates slurm's sbatch
+
+FD=${1:-/dev/stdin}
+
+#parse log file
+LOG=`grep "#SBATCH -o" $FD | awk '{ print $3 }'`
+if [ -z "$LOG" ]; then
+   LOG=/dev/null
+fi
+
+#parse time
+TIM=`grep "#SBATCH -t" $FD | awk '{ print $3 }'`
+if [ -z "$TIM" ]; then
+   CTIM=
+else
+   SECS=`echo $TIM | awk 'BEGIN { FS = ":" } ; { secs = $1 * 3600 + $2 * 60 + $3; print secs };'`
+   CTIM="timeout ${SECS}s"
+fi
+
+#command
+CMD="`cat $FD`"
+
+#execute job in background
+${CTIM} bash -c "${CMD}" &>$LOG &
+echo "Submitted batch job "$!

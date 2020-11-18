@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Emulates slurm's srun
+
+CMDS=""
+
+while (( "$#" )); do
+  case "${1:0:1}" in
+     -)
+       shift 2
+       ;;
+     *)
+       CMDS="$CMDS $1"
+       shift
+       ;;
+  esac
+done
+
+exec ${CMDS}
